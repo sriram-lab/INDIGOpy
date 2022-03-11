@@ -49,3 +49,5 @@ INDIGOpy
   - [ ] Create + populate `tests/test_modeling.py` module
   - [ ] Create + populate `tests/test_preprocessing.py` module
   - [ ] Create + populate `tests/test_visualization.py` module
+- [ ] Deploy + test package in [TestPyPi](https://test.pypi.org/)
+- [ ] Deploy + publish package in [PyPi](https://pypi.org/)
