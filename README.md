@@ -19,6 +19,7 @@ INDIGOpy
 └───indigo
 │   │   __init__.py
 │   │   modeling.py
+│   │   orthology.py
 │   │   preprocessing.py
 │   │   visualization.py
 └───tests
@@ -43,6 +44,7 @@ INDIGOpy
 - [ ] Create + populate `indigo/` package
   - [ ] Configure `indigo/__init__.py` file
   - [ ] Create + populate `indigo/modeling.py` module
+  - [ ] Create + populate `indigo/orthology.py` module
   - [ ] Create + populate `indigo/preprocessing.py` module
   - [ ] Create + populate `indigo/visualization.py` module
 - [ ] Create + populate `tests/` directory 
