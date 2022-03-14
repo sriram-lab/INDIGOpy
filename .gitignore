@@ -1,2 +1,6 @@
-# ignore all gdocs
+# gdocs
 *.gdoc
+
+# ipynb_checkpoints
+.ipynb_checkpoints
+
