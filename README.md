@@ -9,23 +9,19 @@ Implementation of INDIGO (INferring Drug Interactions using chemoGenomics and Or
 ## Tentative repo tree structure: 
 ```
 INDIGOpy
-└───data
-│   │   ecoli_chemogenomics.xlsx
-│   │   mtb_transcriptomics.xlsx
 └───docs
 └───examples
-│   │   ecoli_demo.ipynb
-│   │   mtb_demo.ipynb
-└───indigo
+│   │   indigopy_demo.ipynb
+│   │   prepare_data_from_xlsx.ipynb
+│   │   sample_data.xlsx
+└───indigopy
 │   │   __init__.py
-│   │   modeling.py
-│   │   orthology.py
-│   │   preprocessing.py
-│   │   visualization.py
+│   │   core.py
+│   │   sample_data.pkl
 └───tests
-│   │   test_modeling.py
-│   │   test_preprocessing.py
-│   │   test_visualization.py
+│   │   __init__.py
+│   │   test_core.py
+└───venv
 |   LICENSE
 |   README.md
 |   setup.py
@@ -34,22 +30,9 @@ INDIGOpy
 ## To do: 
 - [ ] Configure `LICENSE` file
 - [ ] Configure `setup.py` file
-- [ ] Create + populate `data/` directory
-  - [ ] Deposit `data/ecoli_chemogenomics.xlsx` file
-  - [ ] Deposit `data/mtb_transcriptomics.xlsx` file
-- [ ] Create + populate `docs/` directory
-- [ ] Create + populate `examples/` directory
-  - [ ] Create + populate `examples/ecoli_demo.ipynb` notebook
-  - [ ] Create + populate `examples/mtb_demo.ipynb` notebook
-- [ ] Create + populate `indigo/` package
-  - [ ] Configure `indigo/__init__.py` file
-  - [ ] Create + populate `indigo/modeling.py` module
-  - [ ] Create + populate `indigo/orthology.py` module
-  - [ ] Create + populate `indigo/preprocessing.py` module
-  - [ ] Create + populate `indigo/visualization.py` module
-- [ ] Create + populate `tests/` directory 
-  - [ ] Create + populate `tests/test_modeling.py` module
-  - [ ] Create + populate `tests/test_preprocessing.py` module
-  - [ ] Create + populate `tests/test_visualization.py` module
+- [X] Create + populate `docs/` directory using Sphinx
+- [X] Create + populate `examples/` directory
+- [X] Create + populate `indigopy/` package
+- [X] Create + populate `tests/` directory 
 - [ ] Deploy + test package in [TestPyPi](https://test.pypi.org/)
 - [ ] Deploy + publish package in [PyPi](https://pypi.org/)
