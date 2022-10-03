@@ -12,6 +12,8 @@ class TestLoadSample:
 
     input1 = 'ecoli'
     input2 = 'mtb'
+    input3 = 'saureus'
+    input4 = 'abaumannii'
 
     def test_load_sample_ecoli(self): 
         """Make sure that `load_sample` works for E. coli data."""
@@ -30,6 +32,24 @@ class TestLoadSample:
         assert all(key in sample['clinical'].keys() for key in ['interactions', 'scores'])
         assert sample['clinical']['interactions'][0] == ['EMBx', 'INH']
 
+    def test_load_sample_saureus(self): 
+        """Make sure that `load_sample` works for S. aureus data."""
+        sample = load_sample(self.input3)
+        assert all(key in sample.keys() for key in ['key', 'profiles', 'feature_names', 'train', 'test', 'orthology'])
+        assert all(key in sample['train'].keys() for key in ['interactions', 'scores'])
+        assert all(key in sample['test'].keys() for key in ['interactions', 'scores'])
+        assert all(key in sample['orthology'].keys() for key in ['strains', 'map'])
+        assert sample['orthology']['map'][0] == ['b0002', 'b0003', 'b0007']
+
+    def test_load_sample_abaumannii(self): 
+        """Make sure that `load_sample` works for A. baumannii data."""
+        sample = load_sample(self.input4)
+        assert all(key in sample.keys() for key in ['key', 'profiles', 'feature_names', 'train', 'test', 'orthology'])
+        assert all(key in sample['train'].keys() for key in ['interactions', 'scores'])
+        assert all(key in sample['test'].keys() for key in ['interactions', 'scores'])
+        assert all(key in sample['orthology'].keys() for key in ['strains', 'map'])
+        assert sample['orthology']['map'][0] == ['b0002', 'b0006', 'b0007']
+
 
 class TestFeaturize: 
 
@@ -47,6 +67,8 @@ class TestFeaturize:
     entropy             = True
     time                = True
     time_values         = [[0, 0], [1, 1], [1, 2], [1, 2, 3]]
+    strains             = ['MG1655', 'MG1655', 'MC1400', 'IAI1']
+    orthology_map       = {'MG1655': ['G1', 'G2'], 'MC1400': ['G1', 'G3'], 'IAI1': ['G1']}
     silent              = False
     
     def test_featurize_default(self): 
@@ -254,6 +276,26 @@ class TestFeaturize:
             'delta-neg-feat1', 'delta-neg-feat2', 'delta-neg-feat3', 
             'delta-pos-feat1', 'delta-pos-feat2', 'delta-pos-feat3', 
             'time'
+            ]
+        df.index = row_names
+        pd.testing.assert_frame_equal(out['feature_df'], df)
+
+    def test_featurize_strains_and_orthology_map(self): 
+        """Make sure that `featurize` works with *strains* and *orthology_map* parameters."""
+        out = featurize(self.interactions, self.profiles, feature_names=self.feature_names, strains=self.strains, orthology_map=self.orthology_map)
+        df = pd.DataFrame(
+            {
+                'A + B': [0.0] * 12, 
+                'A + C': [0.0] * 12, 
+                'B + C': [0.0] * 5 + [1.0] + [0.0] * 5 + [1.0], 
+                'A + B + C': [0.0] * 12
+            }
+        )
+        row_names = [
+            'sigma-neg-G1', 'sigma-neg-G2', 'sigma-neg-G3', 
+            'sigma-pos-G1', 'sigma-pos-G2', 'sigma-pos-G3', 
+            'delta-neg-G1', 'delta-neg-G2', 'delta-neg-G3', 
+            'delta-pos-G1', 'delta-pos-G2', 'delta-pos-G3'
             ]
         df.index = row_names
         pd.testing.assert_frame_equal(out['feature_df'], df)
