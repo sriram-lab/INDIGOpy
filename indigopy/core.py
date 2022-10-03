@@ -15,13 +15,14 @@ def load_sample(dataset:str):
     """Loads a sample dataset. 
     
     This function loads a dictionary containing data relevant to a sample organism. 
-    Currently supports data for *Escherichia coli* and *Mycobacterium tuberculosis*.
+    Currently supports data for *Escherichia coli*, *Mycobacterium tuberculosis*, 
+    *Staphylococcus aureus*, and *Acinetobacter baumannii*.
     
     Parameters
     ----------
     dataset : str
         A string specifying the organism for which to load the sample data.
-        Choose from 'ecoli' or 'mtb'. 
+        Choose from 'ecoli', 'mtb', 'saureus', or 'abaumannii'. 
         
     Returns
     -------
@@ -39,14 +40,28 @@ def load_sample(dataset:str):
                 * feature_names: a list of feature (i.e., gene) names associated with drug profile data  
                 * train: a dictionary for the train subset of the drug interaction data  
                 * test: a dictionary for the test subset of the drug interaction data  
-                * clinical: a dictionary for the clinical subset of the drug interaction data  
+                * clinical: a dictionary for the clinical subset of the drug interaction data 
+            * For 'saureus', the dictionary contains the following keys: 
+                * key: a dictionary for drug name mapping  
+                * profiles: a dictionary of drug profile data (i.e., chemogenomic data)  
+                * feature_names: a list of feature (i.e., gene) names associated with drug profile data  
+                * train: a dictionary for the train subset of the drug interaction data  
+                * test: a dictionary for the test subset of the drug interaction data 
+                * orthology: a dictionary for the orthology data between *E. coli* and *S. aureus*  
+            * For 'abaumannii', the dictionary contains the following keys: 
+                * key: a dictionary for drug name mapping  
+                * profiles: a dictionary of drug profile data (i.e., chemogenomic data)  
+                * feature_names: a list of feature (i.e., gene) names associated with drug profile data  
+                * train: a dictionary for the train subset of the drug interaction data  
+                * test: a dictionary for the test subset of the drug interaction data 
+                * orthology: a dictionary for the orthology data between *E. coli* and *A. baumannii*  
         
     Raises
     ------
     TypeError
         Raised when the input type is not a string.
     ValueError
-        Raised when the function argument does not match accepted values ('ecoli' or 'mtb'). 
+        Raised when the function argument does not match accepted values ('ecoli', 'mtb', 'saureus', 'abaumannii'). 
     
     Examples
     --------
@@ -58,27 +73,38 @@ def load_sample(dataset:str):
     >>> mtb_data = load_sample('mtb')
     >>> print(mtb_data['clinical']['interactions'][0])
     ['EMBx', 'INH']
+    >>> saureus_data = load_sample('saureus')
+    >>> print(saureus_data['orthology']['map']['S_aureus'][0:3])
+    ['b0002', 'b0003', 'b0007']
+    >>> abaumannii_data = load_sample('abaumannii')
+    >>> print(abaumannii_data['orthology']['map']['A_baumannii'][0:3])
+    ['b0002', 'b0006', 'b0007']
     
     """
     # Check inputs
     if type(dataset) is not str: 
         raise TypeError('Provide a string input')
-    if dataset not in ('ecoli', 'mtb'): 
-        raise ValueError('Provide either "ecoli" or "mtb" as the input.')
+    if dataset not in ('ecoli', 'mtb', 'saureus', 'abaumannii'): 
+        raise ValueError("Provide one of the following options: ('ecoli', 'mtb', 'saureus', 'abaumannii').")
     # Load queried dataset
     path = os.path.dirname(os.path.abspath(__file__))
     with open(path + '/sample_data.pkl', 'rb') as f: 
-        ecoli_data, mtb_data = pickle.load(f)
+        ecoli_data, mtb_data, saureus_data, abaumannii_data = pickle.load(f)
         if dataset == 'ecoli': 
             return ecoli_data
         elif dataset == 'mtb': 
             return mtb_data
+        elif dataset == 'saureus': 
+            return saureus_data
+        elif dataset == 'abaumannii': 
+            return abaumannii_data
 
 
 def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dict=None, 
               normalize:bool=False, norm_method:str='znorm', na_handle:float=0., 
               binarize:bool=True, thresholds:tuple=(-2, 2), remove_zero_rows:bool=False, 
-              entropy:bool=False, time:bool=False, time_values:list=None, silent:bool=False): 
+              entropy:bool=False, time:bool=False, time_values:list=None, 
+              strains:list=None, orthology_map:dict=None, silent:bool=False): 
     """Determines ML features for a list of drug combinations. 
     
     This function determines the feature information (i.e., joint profile) for a given drug combination. 
@@ -119,6 +145,12 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     time_values : list, optional
         A list of time values to use for the time feature (default is None). 
         Length must match length of interactions list.
+    strains : list, optional
+        A list of strain names that correspond to interactions (default is None). 
+        Length must match length of interactions list.
+    orthology_map : dict, optional
+        A dictionary of orthology information for each unique strain in strains (default is None). 
+        Key entries must match the unique strain names in strains.
     silent : bool, optional
         Boolean flag to silence warnings (default is False). 
         
@@ -307,6 +339,36 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     +-----------------+-----------+-----------+----------+------------+
     | time            | 0         |  1        | 1        | 3          |
     +-----------------+-----------+-----------+----------+------------+
+    >>> feature_names = ['G1', 'G2', 'G3']
+    >>> strains = ['MG1655', 'MG1655', 'MC1400', 'IAI1']
+    >>> orthology_map = {'MG1655': ['G1', 'G2'], 'MC1400': ['G1', 'G3'], 'IAI1': ['G1']}
+    >>> out = featurize(interactions, profiles, feature_names=feature_names, strains=strains, orthology_map=orthology_map)
+    >>> print(out['feature_df'])
+    +-----------------+---+---+---+----------+
+    | sigma-neg-G1 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | sigma-neg-G2 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | sigma-neg-G3 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | sigma-pos-G1 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | sigma-pos-G2 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | sigma-pos-G3 | 0 | 0 | 1 | 0        |
+    +-----------------+---+---+---+----------+
+    | delta-neg-G1 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | delta-neg-G2 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | delta-neg-G3 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | delta-pos-G1 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | delta-pos-G2 | 0 | 0 | 0 | 0        |
+    +-----------------+---+---+---+----------+
+    | delta-pos-G3 | 0 | 0 | 1 | 0        |
+    +-----------------+---+---+---+----------+
 
     """
     # Check inputs
@@ -362,6 +424,16 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
         time_values = []
         for ixn in interactions: 
             time_values.append([0] * len(ixn))
+    if strains is not None: 
+        if not all([type(x) is str for x in strains]): 
+            raise TypeError('All entries in strains must be of str type')
+        if len(strains) != len(interactions): 
+            raise AssertionError('Length of strains must match length of interactions (N = {})'.format(len(interactions)))
+        if orthology_map is None: 
+            raise ValueError('orthology_map is None while strains is not None. Provide a dict for orthology_map')
+        else: 
+            if (type(orthology_map) is not dict or not all([strain in orthology_map.keys() for strain in strains])): 
+                    raise TypeError('Provide a dict with valid key entries for orthology_map')
 
     # Modify profile names (if key is provided)
     df = pd.DataFrame.from_dict(profiles)
@@ -369,6 +441,7 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
         df = df.rename(columns=key)
 
     # Extract relevant drug profiles
+    keep_ixns = [all(i in list(df.columns) for i in ixn) for ixn in interactions]
     ixn_list = [ixn for ixn in interactions if all(i in list(df.columns) for i in ixn)]
     if len(ixn_list) < len(interactions): 
         if silent is False: 
@@ -426,6 +499,17 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
             feature_dict[delim.join(ixn)] = feat_data
     feature_df = pd.DataFrame.from_dict(feature_dict)
     feature_df.index = feature_list
+
+    # Apply orthology mapping (if strains is not None)
+    if strains is not None: 
+        strains = list(compress(strains, keep_ixns))
+        strain_set = set(strains)
+        for strain in strain_set: 
+            orthologs = orthology_map[strain]
+            row_mask = [feature for feature in list(feature_df.index) if not any([gene == feature[10:] for gene in orthologs])]
+            col_mask = [s == strain for s in strains]
+            feature_df.loc[row_mask, col_mask] = 0
+        feature_dict = pd.DataFrame.to_dict(feature_df)
 
     return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'feature_list': feature_list, 'feature_dict': feature_dict}
 
