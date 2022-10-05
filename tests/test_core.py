@@ -39,7 +39,7 @@ class TestLoadSample:
         assert all(key in sample['train'].keys() for key in ['interactions', 'scores'])
         assert all(key in sample['test'].keys() for key in ['interactions', 'scores'])
         assert all(key in sample['orthology'].keys() for key in ['strains', 'map'])
-        assert sample['orthology']['map'][0] == ['b0002', 'b0003', 'b0007']
+        assert sample['orthology']['map']['S_aureus'][0:3] == ['b0002', 'b0003', 'b0007']
 
     def test_load_sample_abaumannii(self): 
         """Make sure that `load_sample` works for A. baumannii data."""
@@ -48,7 +48,7 @@ class TestLoadSample:
         assert all(key in sample['train'].keys() for key in ['interactions', 'scores'])
         assert all(key in sample['test'].keys() for key in ['interactions', 'scores'])
         assert all(key in sample['orthology'].keys() for key in ['strains', 'map'])
-        assert sample['orthology']['map'][0] == ['b0002', 'b0006', 'b0007']
+        assert sample['orthology']['map']['A_baumannii'][0:3] == ['b0002', 'b0006', 'b0007']
 
 
 class TestFeaturize: 
@@ -132,8 +132,8 @@ class TestFeaturize:
                 ]
             df.index = row_names
             pd.testing.assert_frame_equal(out['feature_df'], df)
-            assert len(w) == 1
-            assert all(s in str(w[-1].message) for s in ['profile', 'key'])
+            assert len(w) > 0
+            assert all(s in str(w[0].message) for s in ['profile', 'key'])
 
     def test_featurize_normalize_and_norm_method(self): 
         """Make sure that `featurize` works with *normalize* and *norm_method* parameters."""
@@ -286,9 +286,9 @@ class TestFeaturize:
         df = pd.DataFrame(
             {
                 'A + B': [0.0] * 12, 
-                'A + C': [0.0] * 12, 
+                'A + C': [0.0] * 11 + [1.0], 
                 'B + C': [0.0] * 5 + [1.0] + [0.0] * 5 + [1.0], 
-                'A + B + C': [0.0] * 12
+                'A + B + C': [0.0] * 11 + [1.0]
             }
         )
         row_names = [
