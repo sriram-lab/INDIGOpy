@@ -344,31 +344,31 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     >>> orthology_map = {'MG1655': ['G1', 'G2'], 'MC1400': ['G1', 'G3'], 'IAI1': ['G1']}
     >>> out = featurize(interactions, profiles, feature_names=feature_names, strains=strains, orthology_map=orthology_map)
     >>> print(out['feature_df'])
-    +-----------------+---+---+---+----------+
-    | sigma-neg-G1 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | sigma-neg-G2 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | sigma-neg-G3 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | sigma-pos-G1 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | sigma-pos-G2 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | sigma-pos-G3 | 0 | 0 | 1 | 0        |
-    +-----------------+---+---+---+----------+
-    | delta-neg-G1 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | delta-neg-G2 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | delta-neg-G3 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | delta-pos-G1 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | delta-pos-G2 | 0 | 0 | 0 | 0        |
-    +-----------------+---+---+---+----------+
-    | delta-pos-G3 | 0 | 0 | 1 | 0        |
-    +-----------------+---+---+---+----------+
+    +--------------+---+---+---+---+
+    | sigma-neg-G1 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | sigma-neg-G2 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | sigma-neg-G3 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | sigma-pos-G1 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | sigma-pos-G2 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | sigma-pos-G3 | 0 | 0 | 1 | 0 |
+    +--------------+---+---+---+---+
+    | delta-neg-G1 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | delta-neg-G2 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | delta-neg-G3 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | delta-pos-G1 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | delta-pos-G2 | 0 | 0 | 0 | 0 |
+    +--------------+---+---+---+---+
+    | delta-pos-G3 | 0 | 1 | 1 | 1 |
+    +--------------+---+---+---+---+
 
     """
     # Check inputs
@@ -438,7 +438,9 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     # Modify profile names (if key is provided)
     df = pd.DataFrame.from_dict(profiles)
     if key is not None: 
-        df = df.rename(columns=key)
+        # df = df.rename(columns=key)
+        df = pd.concat([df, df.rename(columns=key)], axis=1)
+        df = df.loc[:, ~df.columns.duplicated()].copy()
 
     # Extract relevant drug profiles
     keep_ixns = [all(i in list(df.columns) for i in ixn) for ixn in interactions]
@@ -506,12 +508,13 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
         strain_set = set(strains)
         for strain in strain_set: 
             orthologs = orthology_map[strain]
-            row_mask = [feature for feature in list(feature_df.index) if not any([gene == feature[10:] for gene in orthologs])]
+            row_mask = [feature for feature in list(feature_df.index) if (feature.startswith('sigma')) & (not any([gene == feature[10:] for gene in orthologs]))]
             col_mask = [s == strain for s in strains]
             feature_df.loc[row_mask, col_mask] = 0
         feature_dict = pd.DataFrame.to_dict(feature_df)
 
-    return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'feature_list': feature_list, 'feature_dict': feature_dict}
+    # return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'feature_list': feature_list, 'feature_dict': feature_dict}
+    return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'idx': keep_ixns}
 
 
 def classify(scores:list, thresholds:tuple=(-0.1, 0.1), classes:tuple=('Synergy', 'Neutral', 'Antagonism')): 
