@@ -49,8 +49,256 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="tests-test-core-module">
-<h2>tests.test_core module<a class="headerlink" href="#tests-test-core-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-tests.test_core">
+<span id="tests-test-core-module"></span><h2>tests.test_core module<a class="headerlink" href="#module-tests.test_core" title="Permalink to this heading">¶</a></h2>
+<p>This script executes testing of core INDIGOpy functions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_core.TestClassify">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_core.</span></span><span class="sig-name descname"><span class="pre">TestClassify</span></span><a class="headerlink" href="#tests.test_core.TestClassify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestClassify.classes">
+<span class="sig-name descname"><span class="pre">classes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('S',</span> <span class="pre">'N',</span> <span class="pre">'A')</span></em><a class="headerlink" href="#tests.test_core.TestClassify.classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestClassify.scores">
+<span class="sig-name descname"><span class="pre">scores</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[-2,</span> <span class="pre">1.5,</span> <span class="pre">0.5,</span> <span class="pre">-0.1,</span> <span class="pre">1]</span></em><a class="headerlink" href="#tests.test_core.TestClassify.scores" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestClassify.test_classify_classes">
+<span class="sig-name descname"><span class="pre">test_classify_classes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestClassify.test_classify_classes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>classify</cite> works with the <em>classes</em> parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestClassify.test_classify_default">
+<span class="sig-name descname"><span class="pre">test_classify_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestClassify.test_classify_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>classify</cite> works with required inputs only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestClassify.test_classify_thresholds">
+<span class="sig-name descname"><span class="pre">test_classify_thresholds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestClassify.test_classify_thresholds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>classify</cite> works with the <em>thresholds</em> parameter.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestClassify.thresholds">
+<span class="sig-name descname"><span class="pre">thresholds</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-1,</span> <span class="pre">1)</span></em><a class="headerlink" href="#tests.test_core.TestClassify.thresholds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_core.</span></span><span class="sig-name descname"><span class="pre">TestFeaturize</span></span><a class="headerlink" href="#tests.test_core.TestFeaturize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.binarize">
+<span class="sig-name descname"><span class="pre">binarize</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.binarize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.entropy">
+<span class="sig-name descname"><span class="pre">entropy</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.entropy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.feature_names">
+<span class="sig-name descname"><span class="pre">feature_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['G1',</span> <span class="pre">'G2',</span> <span class="pre">'G3']</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.feature_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.interactions">
+<span class="sig-name descname"><span class="pre">interactions</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[['A',</span> <span class="pre">'B'],</span> <span class="pre">['A',</span> <span class="pre">'C'],</span> <span class="pre">['B',</span> <span class="pre">'C'],</span> <span class="pre">['A',</span> <span class="pre">'B',</span> <span class="pre">'C']]</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.interactions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.key">
+<span class="sig-name descname"><span class="pre">key</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Drug_A':</span> <span class="pre">'A',</span> <span class="pre">'Drug_B':</span> <span class="pre">'B',</span> <span class="pre">'Drug_C':</span> <span class="pre">'C'}</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.na_handle">
+<span class="sig-name descname"><span class="pre">na_handle</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.na_handle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.norm_method">
+<span class="sig-name descname"><span class="pre">norm_method</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'minmax'</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.norm_method" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.normalize">
+<span class="sig-name descname"><span class="pre">normalize</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.normalize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.orthology_map">
+<span class="sig-name descname"><span class="pre">orthology_map</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'IAI1':</span> <span class="pre">['G1'],</span> <span class="pre">'MC1400':</span> <span class="pre">['G1',</span> <span class="pre">'G3'],</span> <span class="pre">'MG1655':</span> <span class="pre">['G1',</span> <span class="pre">'G2']}</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.orthology_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.profiles">
+<span class="sig-name descname"><span class="pre">profiles</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'A':</span> <span class="pre">[1,</span> <span class="pre">nan,</span> <span class="pre">1],</span> <span class="pre">'B':</span> <span class="pre">[-2,</span> <span class="pre">1.5,</span> <span class="pre">-0.5],</span> <span class="pre">'C':</span> <span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]}</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.profiles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.profiles_alt">
+<span class="sig-name descname"><span class="pre">profiles_alt</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Drug_A':</span> <span class="pre">[1,</span> <span class="pre">nan,</span> <span class="pre">1],</span> <span class="pre">'Drug_B':</span> <span class="pre">[-2,</span> <span class="pre">1.5,</span> <span class="pre">-0.5],</span> <span class="pre">'Drug_C':</span> <span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]}</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.profiles_alt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.remove_zero_rows">
+<span class="sig-name descname"><span class="pre">remove_zero_rows</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.remove_zero_rows" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.silent">
+<span class="sig-name descname"><span class="pre">silent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.silent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.strains">
+<span class="sig-name descname"><span class="pre">strains</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['MG1655',</span> <span class="pre">'MG1655',</span> <span class="pre">'MC1400',</span> <span class="pre">'IAI1']</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.strains" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_binarize">
+<span class="sig-name descname"><span class="pre">test_featurize_binarize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_binarize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with the <em>binarize</em> parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_default">
+<span class="sig-name descname"><span class="pre">test_featurize_default</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with required inputs only.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_entropy">
+<span class="sig-name descname"><span class="pre">test_featurize_entropy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with the <em>entropy</em> parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_feature_names">
+<span class="sig-name descname"><span class="pre">test_featurize_feature_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_feature_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with the <em>feature_names</em> parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_key_and_silent">
+<span class="sig-name descname"><span class="pre">test_featurize_key_and_silent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_key_and_silent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with the <em>key</em> parameter provided mismatching <em>interactions</em> and <em>profiles</em>.
+Also check that a warning is raised.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_na_handle">
+<span class="sig-name descname"><span class="pre">test_featurize_na_handle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_na_handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with the <em>na_handle</em> parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_normalize_and_norm_method">
+<span class="sig-name descname"><span class="pre">test_featurize_normalize_and_norm_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_normalize_and_norm_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with <em>normalize</em> and <em>norm_method</em> parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_remove_zero_rows">
+<span class="sig-name descname"><span class="pre">test_featurize_remove_zero_rows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_remove_zero_rows" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with the <em>remove_zero_rows</em> parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_strains_and_orthology_map">
+<span class="sig-name descname"><span class="pre">test_featurize_strains_and_orthology_map</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_strains_and_orthology_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with <em>strains</em> and <em>orthology_map</em> parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_thresholds">
+<span class="sig-name descname"><span class="pre">test_featurize_thresholds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_thresholds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with the <em>thresholds</em> parameter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.test_featurize_time_and_time_values">
+<span class="sig-name descname"><span class="pre">test_featurize_time_and_time_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestFeaturize.test_featurize_time_and_time_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>featurize</cite> works with <em>time</em> and <em>time_values</em> parameters.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.thresholds">
+<span class="sig-name descname"><span class="pre">thresholds</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(-1,</span> <span class="pre">1)</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.thresholds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.time">
+<span class="sig-name descname"><span class="pre">time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestFeaturize.time_values">
+<span class="sig-name descname"><span class="pre">time_values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[[0,</span> <span class="pre">0],</span> <span class="pre">[1,</span> <span class="pre">1],</span> <span class="pre">[1,</span> <span class="pre">2],</span> <span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]]</span></em><a class="headerlink" href="#tests.test_core.TestFeaturize.time_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tests.test_core.</span></span><span class="sig-name descname"><span class="pre">TestLoadSample</span></span><a class="headerlink" href="#tests.test_core.TestLoadSample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample.input1">
+<span class="sig-name descname"><span class="pre">input1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ecoli'</span></em><a class="headerlink" href="#tests.test_core.TestLoadSample.input1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample.input2">
+<span class="sig-name descname"><span class="pre">input2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'mtb'</span></em><a class="headerlink" href="#tests.test_core.TestLoadSample.input2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample.input3">
+<span class="sig-name descname"><span class="pre">input3</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'saureus'</span></em><a class="headerlink" href="#tests.test_core.TestLoadSample.input3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample.input4">
+<span class="sig-name descname"><span class="pre">input4</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'abaumannii'</span></em><a class="headerlink" href="#tests.test_core.TestLoadSample.input4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample.test_load_sample_abaumannii">
+<span class="sig-name descname"><span class="pre">test_load_sample_abaumannii</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestLoadSample.test_load_sample_abaumannii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>load_sample</cite> works for A. baumannii data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample.test_load_sample_ecoli">
+<span class="sig-name descname"><span class="pre">test_load_sample_ecoli</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestLoadSample.test_load_sample_ecoli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>load_sample</cite> works for E. coli data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample.test_load_sample_mtb">
+<span class="sig-name descname"><span class="pre">test_load_sample_mtb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestLoadSample.test_load_sample_mtb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>load_sample</cite> works for M. tuberculosis data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tests.test_core.TestLoadSample.test_load_sample_saureus">
+<span class="sig-name descname"><span class="pre">test_load_sample_saureus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tests.test_core.TestLoadSample.test_load_sample_saureus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure that <cite>load_sample</cite> works for S. aureus data.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-tests">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-tests" title="Permalink to this heading">¶</a></h2>
@@ -69,7 +317,60 @@
     <ul>
 <li><a class="reference internal" href="#">tests package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#tests-test-core-module">tests.test_core module</a></li>
+<li><a class="reference internal" href="#module-tests.test_core">tests.test_core module</a><ul>
+<li><a class="reference internal" href="#tests.test_core.TestClassify"><code class="docutils literal notranslate"><span class="pre">TestClassify</span></code></a><ul>
+<li><a class="reference internal" href="#tests.test_core.TestClassify.classes"><code class="docutils literal notranslate"><span class="pre">TestClassify.classes</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestClassify.scores"><code class="docutils literal notranslate"><span class="pre">TestClassify.scores</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestClassify.test_classify_classes"><code class="docutils literal notranslate"><span class="pre">TestClassify.test_classify_classes()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestClassify.test_classify_default"><code class="docutils literal notranslate"><span class="pre">TestClassify.test_classify_default()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestClassify.test_classify_thresholds"><code class="docutils literal notranslate"><span class="pre">TestClassify.test_classify_thresholds()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestClassify.thresholds"><code class="docutils literal notranslate"><span class="pre">TestClassify.thresholds</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize"><code class="docutils literal notranslate"><span class="pre">TestFeaturize</span></code></a><ul>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.binarize"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.binarize</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.entropy"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.entropy</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.feature_names"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.feature_names</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.interactions"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.interactions</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.key"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.key</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.na_handle"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.na_handle</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.norm_method"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.norm_method</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.normalize"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.normalize</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.orthology_map"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.orthology_map</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.profiles"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.profiles</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.profiles_alt"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.profiles_alt</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.remove_zero_rows"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.remove_zero_rows</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.silent"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.silent</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.strains"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.strains</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_binarize"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_binarize()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_default"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_default()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_entropy"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_entropy()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_feature_names"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_feature_names()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_key_and_silent"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_key_and_silent()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_na_handle"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_na_handle()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_normalize_and_norm_method"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_normalize_and_norm_method()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_remove_zero_rows"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_remove_zero_rows()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_strains_and_orthology_map"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_strains_and_orthology_map()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_thresholds"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_thresholds()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.test_featurize_time_and_time_values"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.test_featurize_time_and_time_values()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.thresholds"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.thresholds</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.time"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.time</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestFeaturize.time_values"><code class="docutils literal notranslate"><span class="pre">TestFeaturize.time_values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample"><code class="docutils literal notranslate"><span class="pre">TestLoadSample</span></code></a><ul>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample.input1"><code class="docutils literal notranslate"><span class="pre">TestLoadSample.input1</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample.input2"><code class="docutils literal notranslate"><span class="pre">TestLoadSample.input2</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample.input3"><code class="docutils literal notranslate"><span class="pre">TestLoadSample.input3</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample.input4"><code class="docutils literal notranslate"><span class="pre">TestLoadSample.input4</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample.test_load_sample_abaumannii"><code class="docutils literal notranslate"><span class="pre">TestLoadSample.test_load_sample_abaumannii()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample.test_load_sample_ecoli"><code class="docutils literal notranslate"><span class="pre">TestLoadSample.test_load_sample_ecoli()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample.test_load_sample_mtb"><code class="docutils literal notranslate"><span class="pre">TestLoadSample.test_load_sample_mtb()</span></code></a></li>
+<li><a class="reference internal" href="#tests.test_core.TestLoadSample.test_load_sample_saureus"><code class="docutils literal notranslate"><span class="pre">TestLoadSample.test_load_sample_saureus()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-tests">Module contents</a></li>
 </ul>
 </li>

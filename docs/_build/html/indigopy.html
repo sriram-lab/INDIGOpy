@@ -53,8 +53,401 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="indigopy-core-module">
-<h2>indigopy.core module<a class="headerlink" href="#indigopy-core-module" title="Permalink to this heading">¶</a></h2>
+<section id="module-indigopy.core">
+<span id="indigopy-core-module"></span><h2>indigopy.core module<a class="headerlink" href="#module-indigopy.core" title="Permalink to this heading">¶</a></h2>
+<p>This module contains all custom functions at the core of the INDIGO algorithm.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="indigopy.core.classify">
+<span class="sig-prename descclassname"><span class="pre">indigopy.core.</span></span><span class="sig-name descname"><span class="pre">classify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresholds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(-0.1,</span> <span class="pre">0.1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">('Synergy',</span> <span class="pre">'Neutral',</span> <span class="pre">'Antagonism')</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#indigopy.core.classify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts drug interaction scores into interaction classes.</p>
+<p>Score-to-class conversion is based on the general convention for synergy (negative) and antagonism (positive)
+for interaction outcomes measured based on the Loewe Additivity or Bliss Independence models.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scores</strong> (<em>list</em>) – A list of drug interaction scores.</p></li>
+<li><p><strong>thresholds</strong> (<em>tuple</em><em>, </em><em>optional</em>) – A tuple of two floating numbers indicative of (inclusive) thresholds for synergy and antagonism, repectively.</p></li>
+<li><p><strong>classes</strong> (<em>tuple</em><em>, </em><em>optional</em>) – A tuple of three strings representative of class labels. By default, the three classes are Synergy, Neutral, and Antagonism.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of class labels for the given list of interaction scores.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>AssertionError</strong> – Raised when the wrong number of elements is provided for <cite>thresholds</cite> or <cite>classes</cite>.</p></li>
+<li><p><strong>TypeError</strong> – Raised when a given input type is incorrect.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Usage cases of the <cite>classify</cite> function.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">classify</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+<span class="go">[&#39;Synergy&#39;, &#39;Antagonism&#39;, &#39;Antagonism&#39;, &#39;Synergy&#39;, &#39;Antagonism&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">thresholds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">classify</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresholds</span><span class="p">)</span>
+<span class="go">[&#39;Synergy&#39;, &#39;Antagonism&#39;, &#39;Neutral&#39;, &#39;Neutral&#39;, &#39;Antagonism&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">classes</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">classify</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+<span class="go">[&#39;S&#39;, &#39;A&#39;, &#39;N&#39;, &#39;N&#39;, &#39;A&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="indigopy.core.featurize">
+<span class="sig-prename descclassname"><span class="pre">indigopy.core.</span></span><span class="sig-name descname"><span class="pre">featurize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interactions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'znorm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na_handle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binarize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresholds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(-2,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_zero_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entropy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orthology_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">silent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#indigopy.core.featurize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines ML features for a list of drug combinations.</p>
+<p>This function determines the feature information (i.e., joint profile) for a given drug combination.
+The feature information is comprised of four pieces of information:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>sigma scores</strong>: indicative of the combined drug effect</p></li>
+<li><p><strong>delta scores</strong>: indicative of drug-unique effects</p></li>
+<li><p><strong>entropy scores</strong>: indicative of the combined entropy (optional)</p></li>
+<li><p><strong>time score</strong>: indicative of time difference between treatments (optional)</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interactions</strong> (<em>list</em>) – A list of lists containing the drug names involved in a combination.</p></li>
+<li><p><strong>profiles</strong> (<em>dict</em>) – A dictionary of profile information for individual drug treatments.</p></li>
+<li><p><strong>feature_names</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of feature names corresponding to the profile information (default is None).</p></li>
+<li><p><strong>key</strong> (<em>dict</em><em>, </em><em>optional</em>) – A dictionary of mapping information between drug names in interactions and profiles (default is None).
+key.keys() must correspond to profiles.keys() and key.values() must correspond to drug names in interactions.</p></li>
+<li><p><strong>normalize</strong> (<em>bool</em><em>, </em><em>optional</em>) – Boolean flag to normalize drug profile data (default is False).</p></li>
+<li><p><strong>norm_method</strong> (<em>str</em><em>, </em><em>optional</em>) – A string specifying the normalization method to use; choose between ‘znorm’ or ‘minmax’ (default is ‘znorm’).</p></li>
+<li><p><strong>na_handle</strong> (<em>float</em><em>, </em><em>optional</em>) – A numeric value used for replacing any NaN values in profiles (default is 0.).</p></li>
+<li><p><strong>binarize</strong> (<em>bool</em><em>, </em><em>optional</em>) – Boolean flag to binarize drug profile data (default is True).</p></li>
+<li><p><strong>thresholds</strong> (<em>tuple</em><em>, </em><em>optional</em>) – A tuple of floating numbers indicative of (inclusive) thresholds for data binarization.</p></li>
+<li><p><strong>remove_zero_rows</strong> (<em>bool</em><em>, </em><em>optional</em>) – Boolean flag for remove all-zero rows from profile data (default is False).</p></li>
+<li><p><strong>entropy</strong> (<em>bool</em><em>, </em><em>optional</em>) – Boolean flag to determine entropy scores (default is False).</p></li>
+<li><p><strong>time</strong> (<em>bool</em><em>, </em><em>optional</em>) – Boolean flag to determine time score (default is False).</p></li>
+<li><p><strong>time_values</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of time values to use for the time feature (default is None).
+Length must match length of interactions list.</p></li>
+<li><p><strong>strains</strong> (<em>list</em><em>, </em><em>optional</em>) – A list of strain names that correspond to interactions (default is None).
+Length must match length of interactions list.</p></li>
+<li><p><strong>orthology_map</strong> (<em>dict</em><em>, </em><em>optional</em>) – A dictionary of orthology information for each unique strain in strains (default is None).
+Key entries must match the unique strain names in strains.</p></li>
+<li><p><strong>silent</strong> (<em>bool</em><em>, </em><em>optional</em>) – Boolean flag to silence warnings (default is False).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of feature information for the given list of drug combinations.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>AssertionError</strong> – Raised when argument data dimensions do not correctly correspond to one another.</p></li>
+<li><p><strong>KeyError</strong> – Raised when a drug profile is not provided; bypassed with a warning indicating missing information.</p></li>
+<li><p><strong>TypeError</strong> – Raised when a given input type is incorrect.</p></li>
+<li><p><strong>ValueError</strong> – Raised when a given input value is incorrect.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Usage cases of the <cite>featurize</cite> function.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">interactions</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">profiles</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="n">profiles</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">])</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-feat3 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-feat3 | 0 | 1 | 1 | 0.666667 |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-feat3 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-feat3 | 0 | 1 | 1 | 1        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span> <span class="s1">&#39;G2&#39;</span><span class="p">,</span> <span class="s1">&#39;G3&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">])</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-G1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-G2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-G3 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-G1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-G2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-G3 | 0 | 1 | 1 | 0.666667 |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-G1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-G2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-G3 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-G1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-G2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-G3 | 0 | 1 | 1 | 1        |</span>
+<span class="go">+--------------+---+---+---+----------+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">profiles_alt</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Drug_A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;Drug_B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span> <span class="s1">&#39;Drug_C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">key</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Drug_A&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;Drug_B&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;Drug_C&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">silent</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="n">profiles_alt</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="n">silent</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">])</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-feat3 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-feat3 | 0 | 1 | 1 | 0.666667 |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-feat3 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-feat3 | 0 | 1 | 1 | 1        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">normalize</span><span class="p">,</span> <span class="n">norm_method</span><span class="p">,</span> <span class="n">na_handle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;minmax&#39;</span><span class="p">,</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">,</span> <span class="n">norm_method</span><span class="o">=</span><span class="n">norm_method</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">])</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| sigma-neg-feat1 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| sigma-neg-feat2 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| sigma-neg-feat3 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| sigma-pos-feat1 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| sigma-pos-feat2 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| sigma-pos-feat3 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| delta-neg-feat1 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| delta-neg-feat2 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| delta-neg-feat3 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| delta-pos-feat1 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| delta-pos-feat2 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="go">| delta-pos-feat3 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+-----------------+---+---+---+---+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binarize</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">,</span> <span class="n">remove_zero_rows</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="kc">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">binarize</span><span class="o">=</span><span class="n">binarize</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresholds</span><span class="p">,</span> <span class="n">remove_zero_rows</span><span class="o">=</span><span class="n">remove_zero_rows</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">])</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-neg-feat1 | 1 | 0 | 1 | 0.666667 |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-feat2 | 1 | 1 | 2 | 1.33333  |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| sigma-pos-feat3 | 0 | 1 | 1 | 0.666667 |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-neg-feat1 | 1 | 0 | 1 | 1        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-feat2 | 1 | 1 | 0 | 0        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="go">| delta-pos-feat3 | 0 | 1 | 1 | 1        |</span>
+<span class="go">+-----------------+---+---+---+----------+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">entropy</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">time_values</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">entropy</span><span class="o">=</span><span class="n">entropy</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">time_values</span><span class="o">=</span><span class="n">time_values</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">])</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| sigma-neg-feat1 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| sigma-neg-feat2 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| sigma-neg-feat3 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| sigma-pos-feat1 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| sigma-pos-feat2 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| sigma-pos-feat3 | 0         |  1        | 1        | 0.666667   |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| delta-neg-feat1 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| delta-neg-feat2 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| delta-neg-feat3 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| delta-pos-feat1 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| delta-pos-feat2 | 0         |  0        | 0        | 0          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| delta-pos-feat3 | 0         |  0.5      | 0.666667 | 0.5        |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| entropy-mean    | 0.0136995 | -0.549306 | 0.563006 | 0.00913299 |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| entropy-sum     | 0.027399  | -1.09861  | 1.12601  | 0.027399   |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="go">| time            | 0         |  1        | 1        | 3          |</span>
+<span class="go">+-----------------+-----------+-----------+----------+------------+</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span> <span class="s1">&#39;G2&#39;</span><span class="p">,</span> <span class="s1">&#39;G3&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">strains</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MG1655&#39;</span><span class="p">,</span> <span class="s1">&#39;MG1655&#39;</span><span class="p">,</span> <span class="s1">&#39;MC1400&#39;</span><span class="p">,</span> <span class="s1">&#39;IAI1&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orthology_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;MG1655&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span> <span class="s1">&#39;G2&#39;</span><span class="p">],</span> <span class="s1">&#39;MC1400&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span> <span class="s1">&#39;G3&#39;</span><span class="p">],</span> <span class="s1">&#39;IAI1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">strains</span><span class="o">=</span><span class="n">strains</span><span class="p">,</span> <span class="n">orthology_map</span><span class="o">=</span><span class="n">orthology_map</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">])</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| sigma-neg-G1 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| sigma-neg-G2 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| sigma-neg-G3 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| sigma-pos-G1 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| sigma-pos-G2 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| sigma-pos-G3 | 0 | 0 | 1 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| delta-neg-G1 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| delta-neg-G2 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| delta-neg-G3 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| delta-pos-G1 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| delta-pos-G2 | 0 | 0 | 0 | 0 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+<span class="go">| delta-pos-G3 | 0 | 1 | 1 | 1 |</span>
+<span class="go">+--------------+---+---+---+---+</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="indigopy.core.load_sample">
+<span class="sig-prename descclassname"><span class="pre">indigopy.core.</span></span><span class="sig-name descname"><span class="pre">load_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#indigopy.core.load_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a sample dataset.</p>
+<p>This function loads a dictionary containing data relevant to a sample organism.
+Currently supports data for <em>Escherichia coli</em>, <em>Mycobacterium tuberculosis</em>,
+<em>Staphylococcus aureus</em>, and <em>Acinetobacter baumannii</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<em>str</em>) – A string specifying the organism for which to load the sample data.
+Choose from ‘ecoli’, ‘mtb’, ‘saureus’, or ‘abaumannii’.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>A dictionary object containing data for an organism of interest. Specifically:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>For ‘ecoli’, the dictionary contains the following keys:</dt><dd><ul>
+<li><p>key: a dictionary for drug name mapping</p></li>
+<li><p>profiles: a dictionary of drug profile data (i.e., chemogenomic data)</p></li>
+<li><p>feature_names: a list of feature (i.e., gene) names associated with drug profile data</p></li>
+<li><p>train: a dictionary for the train subset of the drug interaction data</p></li>
+<li><p>test: a dictionary for the test subset of the drug interaction data</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>For ‘mtb’, the dictionary contains the following keys:</dt><dd><ul>
+<li><p>key: a dictionary for drug name mapping</p></li>
+<li><p>profiles: a dictionary of drug profile data (i.e., transcriptomic data)</p></li>
+<li><p>feature_names: a list of feature (i.e., gene) names associated with drug profile data</p></li>
+<li><p>train: a dictionary for the train subset of the drug interaction data</p></li>
+<li><p>test: a dictionary for the test subset of the drug interaction data</p></li>
+<li><p>clinical: a dictionary for the clinical subset of the drug interaction data</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>For ‘saureus’, the dictionary contains the following keys:</dt><dd><ul>
+<li><p>key: a dictionary for drug name mapping</p></li>
+<li><p>profiles: a dictionary of drug profile data (i.e., chemogenomic data)</p></li>
+<li><p>feature_names: a list of feature (i.e., gene) names associated with drug profile data</p></li>
+<li><p>train: a dictionary for the train subset of the drug interaction data</p></li>
+<li><p>test: a dictionary for the test subset of the drug interaction data</p></li>
+<li><p>orthology: a dictionary for the orthology data between <em>E. coli</em> and <em>S. aureus</em></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>For ‘abaumannii’, the dictionary contains the following keys:</dt><dd><ul>
+<li><p>key: a dictionary for drug name mapping</p></li>
+<li><p>profiles: a dictionary of drug profile data (i.e., chemogenomic data)</p></li>
+<li><p>feature_names: a list of feature (i.e., gene) names associated with drug profile data</p></li>
+<li><p>train: a dictionary for the train subset of the drug interaction data</p></li>
+<li><p>test: a dictionary for the test subset of the drug interaction data</p></li>
+<li><p>orthology: a dictionary for the orthology data between <em>E. coli</em> and <em>A. baumannii</em></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TypeError</strong> – Raised when the input type is not a string.</p></li>
+<li><p><strong>ValueError</strong> – Raised when the function argument does not match accepted values (‘ecoli’, ‘mtb’, ‘saureus’, ‘abaumannii’).</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Usage cases of the <cite>load_sample</cite> function.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ecoli_data</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="s1">&#39;ecoli&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ecoli_data</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">[&#39;AMK&#39;, &#39;CEF&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mtb_data</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="s1">&#39;mtb&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">mtb_data</span><span class="p">[</span><span class="s1">&#39;clinical&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="go">[&#39;EMBx&#39;, &#39;INH&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">saureus_data</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="s1">&#39;saureus&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">saureus_data</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">][</span><span class="s1">&#39;map&#39;</span><span class="p">][</span><span class="s1">&#39;S_aureus&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">[&#39;b0002&#39;, &#39;b0003&#39;, &#39;b0007&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">abaumannii_data</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="s1">&#39;abaumannii&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">abaumannii_data</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">][</span><span class="s1">&#39;map&#39;</span><span class="p">][</span><span class="s1">&#39;A_baumannii&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+<span class="go">[&#39;b0002&#39;, &#39;b0006&#39;, &#39;b0007&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="module-indigopy">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-indigopy" title="Permalink to this heading">¶</a></h2>
@@ -73,7 +466,12 @@
     <ul>
 <li><a class="reference internal" href="#">indigopy package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#indigopy-core-module">indigopy.core module</a></li>
+<li><a class="reference internal" href="#module-indigopy.core">indigopy.core module</a><ul>
+<li><a class="reference internal" href="#indigopy.core.classify"><code class="docutils literal notranslate"><span class="pre">classify()</span></code></a></li>
+<li><a class="reference internal" href="#indigopy.core.featurize"><code class="docutils literal notranslate"><span class="pre">featurize()</span></code></a></li>
+<li><a class="reference internal" href="#indigopy.core.load_sample"><code class="docutils literal notranslate"><span class="pre">load_sample()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-indigopy">Module contents</a></li>
 </ul>
 </li>
