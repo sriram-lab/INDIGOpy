@@ -3,6 +3,7 @@
 
 # .py* files
 *.py*
+*.pyc
 
 # ipynb_checkpoints
 .ipynb_checkpoints
