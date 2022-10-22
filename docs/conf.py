@@ -14,10 +14,10 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-import mock
-MOCK_MODULES = ['numpy', 'pandas', 'scipy']
+from unittest.mock import MagicMock
+MOCK_MODULES = ['numpy', 'pandas']
 for mod in MOCK_MODULES: 
-	sys.modules[mod] = mock.Mock()
+	sys.modules[mod] = MagicMock()
 
 
 # -- Project information -----------------------------------------------------
