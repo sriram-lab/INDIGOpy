@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html  lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>tests.test_core</title>
+    
+          <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../_static/theme.css " type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../_static/theme-vendors.js"></script> -->
+      <script src="../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../genindex.html" />
+  <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../index.html" class="home-link">
+    
+      <span class="site-name">INDIGOpy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../modules.html#indigopy">indigopy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../indigopy.html" class="reference internal ">indigopy package</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../tests.html" class="reference internal ">tests package</a>
+            
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../index.html">Module code</a> &raquo;</li>
+    
+    <li>tests.test_core</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for tests.test_core</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This script executes testing of core INDIGOpy functions.&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">catch_warnings</span>
+
+<span class="kn">from</span> <span class="nn">indigopy.core</span> <span class="kn">import</span> <span class="n">load_sample</span><span class="p">,</span> <span class="n">featurize</span><span class="p">,</span> <span class="n">classify</span>
+
+
+<div class="viewcode-block" id="TestLoadSample"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestLoadSample">[docs]</a><span class="k">class</span> <span class="nc">TestLoadSample</span><span class="p">:</span> 
+
+    <span class="n">input1</span> <span class="o">=</span> <span class="s1">&#39;ecoli&#39;</span>
+    <span class="n">input2</span> <span class="o">=</span> <span class="s1">&#39;mtb&#39;</span>
+    <span class="n">input3</span> <span class="o">=</span> <span class="s1">&#39;saureus&#39;</span>
+    <span class="n">input4</span> <span class="o">=</span> <span class="s1">&#39;abaumannii&#39;</span>
+
+<div class="viewcode-block" id="TestLoadSample.test_load_sample_ecoli"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestLoadSample.test_load_sample_ecoli">[docs]</a>    <span class="k">def</span> <span class="nf">test_load_sample_ecoli</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `load_sample` works for E. coli data.&quot;&quot;&quot;</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input1</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;profiles&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_names&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;AMK&#39;</span><span class="p">,</span> <span class="s1">&#39;CEF&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TestLoadSample.test_load_sample_mtb"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestLoadSample.test_load_sample_mtb">[docs]</a>    <span class="k">def</span> <span class="nf">test_load_sample_mtb</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `load_sample` works for M. tuberculosis data.&quot;&quot;&quot;</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input2</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;profiles&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_names&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;clinical&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;clinical&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;clinical&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;EMBx&#39;</span><span class="p">,</span> <span class="s1">&#39;INH&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TestLoadSample.test_load_sample_saureus"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestLoadSample.test_load_sample_saureus">[docs]</a>    <span class="k">def</span> <span class="nf">test_load_sample_saureus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `load_sample` works for S. aureus data.&quot;&quot;&quot;</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input3</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;profiles&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_names&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;orthology&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;strains&#39;</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">][</span><span class="s1">&#39;map&#39;</span><span class="p">][</span><span class="s1">&#39;S_aureus&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;b0002&#39;</span><span class="p">,</span> <span class="s1">&#39;b0003&#39;</span><span class="p">,</span> <span class="s1">&#39;b0007&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TestLoadSample.test_load_sample_abaumannii"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestLoadSample.test_load_sample_abaumannii">[docs]</a>    <span class="k">def</span> <span class="nf">test_load_sample_abaumannii</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `load_sample` works for A. baumannii data.&quot;&quot;&quot;</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input4</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">,</span> <span class="s1">&#39;profiles&#39;</span><span class="p">,</span> <span class="s1">&#39;feature_names&#39;</span><span class="p">,</span> <span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;orthology&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;interactions&#39;</span><span class="p">,</span> <span class="s1">&#39;scores&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;strains&#39;</span><span class="p">,</span> <span class="s1">&#39;map&#39;</span><span class="p">])</span>
+        <span class="k">assert</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">][</span><span class="s1">&#39;map&#39;</span><span class="p">][</span><span class="s1">&#39;A_baumannii&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;b0002&#39;</span><span class="p">,</span> <span class="s1">&#39;b0006&#39;</span><span class="p">,</span> <span class="s1">&#39;b0007&#39;</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="TestFeaturize"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize">[docs]</a><span class="k">class</span> <span class="nc">TestFeaturize</span><span class="p">:</span> 
+
+    <span class="n">interactions</span>        <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]]</span>
+    <span class="n">profiles</span>            <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]}</span>
+    <span class="n">profiles_alt</span>        <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Drug_A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;Drug_B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">],</span> <span class="s1">&#39;Drug_C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]}</span>
+    <span class="n">feature_names</span>       <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span> <span class="s1">&#39;G2&#39;</span><span class="p">,</span> <span class="s1">&#39;G3&#39;</span><span class="p">]</span>
+    <span class="n">key</span>                 <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Drug_A&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;Drug_B&#39;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;Drug_C&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">}</span>
+    <span class="n">normalize</span>           <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">norm_method</span>         <span class="o">=</span> <span class="s1">&#39;minmax&#39;</span>
+    <span class="n">na_handle</span>           <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">binarize</span>            <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">thresholds</span>          <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">remove_zero_rows</span>    <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">entropy</span>             <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">time</span>                <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">time_values</span>         <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+    <span class="n">strains</span>             <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MG1655&#39;</span><span class="p">,</span> <span class="s1">&#39;MG1655&#39;</span><span class="p">,</span> <span class="s1">&#39;MC1400&#39;</span><span class="p">,</span> <span class="s1">&#39;IAI1&#39;</span><span class="p">]</span>
+    <span class="n">orthology_map</span>       <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;MG1655&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span> <span class="s1">&#39;G2&#39;</span><span class="p">],</span> <span class="s1">&#39;MC1400&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">,</span> <span class="s1">&#39;G3&#39;</span><span class="p">],</span> <span class="s1">&#39;IAI1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;G1&#39;</span><span class="p">]}</span>
+    <span class="n">silent</span>              <span class="o">=</span> <span class="kc">False</span>
+    
+<div class="viewcode-block" id="TestFeaturize.test_featurize_default"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_default">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with required inputs only.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;sigma-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat3&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_feature_names"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_feature_names">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_feature_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with the *feature_names* parameter.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-neg-G1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-G2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-G3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;sigma-pos-G1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-G2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-G3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-neg-G1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-G2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-G3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-pos-G1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-G2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-G3&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_key_and_silent"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_key_and_silent">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_key_and_silent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with the *key* parameter provided mismatching *interactions* and *profiles*. </span>
+<span class="sd">        Also check that a warning is raised. &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span> 
+            <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles_alt</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">silent</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> 
+                    <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                    <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                    <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s1">&#39;sigma-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat3&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;sigma-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat3&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;delta-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat3&#39;</span><span class="p">,</span> 
+                <span class="s1">&#39;delta-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat3&#39;</span>
+                <span class="p">]</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">s</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;profile&#39;</span><span class="p">,</span> <span class="s1">&#39;key&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_normalize_and_norm_method"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_normalize_and_norm_method">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_normalize_and_norm_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with *normalize* and *norm_method* parameters.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normalize</span><span class="p">,</span> <span class="n">norm_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">norm_method</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;sigma-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat3&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_na_handle"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_na_handle">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_na_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with the *na_handle* parameter.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">na_handle</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">na_handle</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;sigma-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat3&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_binarize"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_binarize">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_binarize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with the *binarize* parameter.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">binarize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">binarize</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">7</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-feat3&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_thresholds"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_thresholds">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_thresholds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with the *thresholds* parameter.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="p">[</span><span class="mi">4</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;sigma-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat3&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_remove_zero_rows"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_remove_zero_rows">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_remove_zero_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with the *remove_zero_rows* parameter.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">remove_zero_rows</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">remove_zero_rows</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sigma-pos-feat3&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat3&#39;</span><span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_entropy"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_entropy">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with the *entropy* parameter.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">entropy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">entropy</span><span class="p">)</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">)</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span>
+        <span class="n">entropy_AB</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">()]</span>
+        <span class="n">entropy_AC</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">()]</span>
+        <span class="n">entropy_BC</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">()]</span>
+        <span class="n">entropy_ABC</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pdf</span><span class="p">[[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">()]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="n">entropy_AB</span><span class="p">,</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="n">entropy_AC</span><span class="p">,</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="n">entropy_BC</span><span class="p">,</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="n">entropy_ABC</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;sigma-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;entropy-mean&#39;</span><span class="p">,</span> <span class="s1">&#39;entropy-sum&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_time_and_time_values"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_time_and_time_values">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_time_and_time_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with *time* and *time_values* parameters.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">time_values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_values</span><span class="p">)</span>
+        <span class="n">time_AB</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_values</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">time_AC</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_values</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">time_BC</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_values</span><span class="p">[</span><span class="mi">2</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">time_ABC</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time_values</span><span class="p">[</span><span class="mi">3</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="n">time_AB</span><span class="p">,</span> 
+                <span class="s1">&#39;A -&gt; C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]</span> <span class="o">+</span> <span class="n">time_AC</span><span class="p">,</span> 
+                <span class="s1">&#39;B -&gt; C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">time_BC</span><span class="p">,</span> 
+                <span class="s1">&#39;A -&gt; B -&gt; C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]</span> <span class="o">+</span> <span class="n">time_ABC</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;sigma-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-neg-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-pos-feat1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-feat3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;time&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestFeaturize.test_featurize_strains_and_orthology_map"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestFeaturize.test_featurize_strains_and_orthology_map">[docs]</a>    <span class="k">def</span> <span class="nf">test_featurize_strains_and_orthology_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `featurize` works with *strains* and *orthology_map* parameters.&quot;&quot;&quot;</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">strains</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">strains</span><span class="p">,</span> <span class="n">orthology_map</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">orthology_map</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;A + B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">12</span><span class="p">,</span> 
+                <span class="s1">&#39;A + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">11</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> 
+                <span class="s1">&#39;A + B + C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">11</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">row_names</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;sigma-neg-G1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-G2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-neg-G3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;sigma-pos-G1&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-G2&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma-pos-G3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-neg-G1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-G2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-neg-G3&#39;</span><span class="p">,</span> 
+            <span class="s1">&#39;delta-pos-G1&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-G2&#39;</span><span class="p">,</span> <span class="s1">&#39;delta-pos-G3&#39;</span>
+            <span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">row_names</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_frame_equal</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TestClassify"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestClassify">[docs]</a><span class="k">class</span> <span class="nc">TestClassify</span><span class="p">:</span> 
+
+    <span class="n">scores</span>      <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">thresholds</span>  <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">classes</span>     <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TestClassify.test_classify_default"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestClassify.test_classify_default">[docs]</a>    <span class="k">def</span> <span class="nf">test_classify_default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `classify` works with required inputs only.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">classify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;Synergy&#39;</span><span class="p">,</span> <span class="s1">&#39;Antagonism&#39;</span><span class="p">,</span> <span class="s1">&#39;Antagonism&#39;</span><span class="p">,</span> <span class="s1">&#39;Synergy&#39;</span><span class="p">,</span> <span class="s1">&#39;Antagonism&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TestClassify.test_classify_thresholds"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestClassify.test_classify_thresholds">[docs]</a>    <span class="k">def</span> <span class="nf">test_classify_thresholds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `classify` works with the *thresholds* parameter.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">classify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thresholds</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;Synergy&#39;</span><span class="p">,</span> <span class="s1">&#39;Antagonism&#39;</span><span class="p">,</span> <span class="s1">&#39;Neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;Neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;Antagonism&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TestClassify.test_classify_classes"><a class="viewcode-back" href="../../tests.html#tests.test_core.TestClassify.test_classify_classes">[docs]</a>    <span class="k">def</span> <span class="nf">test_classify_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> 
+        <span class="sd">&quot;&quot;&quot;Make sure that `classify` works with the *classes* parameter.&quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="n">classify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">]</span></div></div>
+
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2022, sriram-lab.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>

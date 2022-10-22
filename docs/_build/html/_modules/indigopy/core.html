@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html  lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>indigopy.core</title>
+    
+          <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+          <link rel="stylesheet" href="../../_static/theme.css " type="text/css" />
+      
+      <!-- sphinx script_files -->
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+
+      
+      <!-- bundled in js (rollup iife) -->
+      <!-- <script src="../../_static/theme-vendors.js"></script> -->
+      <script src="../../_static/theme.js" defer></script>
+    
+  <link rel="index" title="Index" href="../../genindex.html" />
+  <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+
+  <body>
+    <div id="app">
+    <div class="theme-container" :class="pageClasses"><navbar @toggle-sidebar="toggleSidebar">
+  <router-link to="../../index.html" class="home-link">
+    
+      <span class="site-name">INDIGOpy</span>
+    
+  </router-link>
+
+  <div class="links">
+    <navlinks class="can-hide">
+
+
+
+    </navlinks>
+  </div>
+</navbar>
+
+      
+      <div class="sidebar-mask" @click="toggleSidebar(false)">
+      </div>
+        <sidebar @toggle-sidebar="toggleSidebar">
+          
+          <navlinks>
+            
+
+
+
+            
+          </navlinks><div id="searchbox" class="searchbox" role="search">
+  <div class="caption"><span class="caption-text">Quick search</span>
+    <div class="searchformwrapper">
+      <form class="search" action="../../search.html" method="get">
+        <input type="text" name="q" />
+        <input type="submit" value="Search" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+      </form>
+    </div>
+  </div>
+</div><div class="sidebar-links" role="navigation" aria-label="main navigation">
+  
+    <div class="sidebar-group">
+      <p class="caption">
+        <span class="caption-text"><a href="../../modules.html#indigopy">indigopy</a></span>
+      </p>
+      <ul class="">
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../indigopy.html" class="reference internal ">indigopy package</a>
+            
+
+            
+          </li>
+
+        
+          <li class="toctree-l1 ">
+            
+              <a href="../../tests.html" class="reference internal ">tests package</a>
+            
+
+            
+          </li>
+
+        
+      </ul>
+    </div>
+  
+</div>
+        </sidebar>
+
+      <page>
+          <div class="body-header" role="navigation" aria-label="navigation">
+  
+  <ul class="breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+    
+      <li><a href="../index.html">Module code</a> &raquo;</li>
+    
+    <li>indigopy.core</li>
+  </ul>
+  
+
+  <ul class="page-nav">
+</ul>
+  
+</div>
+<hr>
+          <div class="content" role="main" v-pre>
+            
+  <h1>Source code for indigopy.core</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;This module contains all custom functions at the core of the INDIGO algorithm.&quot;&quot;&quot;</span>
+
+<span class="n">__licence__</span> <span class="o">=</span> <span class="s2">&quot;GPL GNU&quot;</span>
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s2">&quot;reStructuredText&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">compress</span>
+
+
+<div class="viewcode-block" id="load_sample"><a class="viewcode-back" href="../../indigopy.html#indigopy.core.load_sample">[docs]</a><span class="k">def</span> <span class="nf">load_sample</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot;Loads a sample dataset. </span>
+<span class="sd">    </span>
+<span class="sd">    This function loads a dictionary containing data relevant to a sample organism. </span>
+<span class="sd">    Currently supports data for *Escherichia coli*, *Mycobacterium tuberculosis*, </span>
+<span class="sd">    *Staphylococcus aureus*, and *Acinetobacter baumannii*.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataset : str</span>
+<span class="sd">        A string specifying the organism for which to load the sample data.</span>
+<span class="sd">        Choose from &#39;ecoli&#39;, &#39;mtb&#39;, &#39;saureus&#39;, or &#39;abaumannii&#39;. </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary object containing data for an organism of interest. Specifically:  </span>
+<span class="sd">            * For &#39;ecoli&#39;, the dictionary contains the following keys: </span>
+<span class="sd">                * key: a dictionary for drug name mapping  </span>
+<span class="sd">                * profiles: a dictionary of drug profile data (i.e., chemogenomic data)  </span>
+<span class="sd">                * feature_names: a list of feature (i.e., gene) names associated with drug profile data  </span>
+<span class="sd">                * train: a dictionary for the train subset of the drug interaction data  </span>
+<span class="sd">                * test: a dictionary for the test subset of the drug interaction data  </span>
+<span class="sd">            * For &#39;mtb&#39;, the dictionary contains the following keys:  </span>
+<span class="sd">                * key: a dictionary for drug name mapping  </span>
+<span class="sd">                * profiles: a dictionary of drug profile data (i.e., transcriptomic data)  </span>
+<span class="sd">                * feature_names: a list of feature (i.e., gene) names associated with drug profile data  </span>
+<span class="sd">                * train: a dictionary for the train subset of the drug interaction data  </span>
+<span class="sd">                * test: a dictionary for the test subset of the drug interaction data  </span>
+<span class="sd">                * clinical: a dictionary for the clinical subset of the drug interaction data </span>
+<span class="sd">            * For &#39;saureus&#39;, the dictionary contains the following keys: </span>
+<span class="sd">                * key: a dictionary for drug name mapping  </span>
+<span class="sd">                * profiles: a dictionary of drug profile data (i.e., chemogenomic data)  </span>
+<span class="sd">                * feature_names: a list of feature (i.e., gene) names associated with drug profile data  </span>
+<span class="sd">                * train: a dictionary for the train subset of the drug interaction data  </span>
+<span class="sd">                * test: a dictionary for the test subset of the drug interaction data </span>
+<span class="sd">                * orthology: a dictionary for the orthology data between *E. coli* and *S. aureus*  </span>
+<span class="sd">            * For &#39;abaumannii&#39;, the dictionary contains the following keys: </span>
+<span class="sd">                * key: a dictionary for drug name mapping  </span>
+<span class="sd">                * profiles: a dictionary of drug profile data (i.e., chemogenomic data)  </span>
+<span class="sd">                * feature_names: a list of feature (i.e., gene) names associated with drug profile data  </span>
+<span class="sd">                * train: a dictionary for the train subset of the drug interaction data  </span>
+<span class="sd">                * test: a dictionary for the test subset of the drug interaction data </span>
+<span class="sd">                * orthology: a dictionary for the orthology data between *E. coli* and *A. baumannii*  </span>
+<span class="sd">        </span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        Raised when the input type is not a string.</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Raised when the function argument does not match accepted values (&#39;ecoli&#39;, &#39;mtb&#39;, &#39;saureus&#39;, &#39;abaumannii&#39;). </span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Usage cases of the `load_sample` function.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; ecoli_data = load_sample(&#39;ecoli&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(ecoli_data[&#39;train&#39;][&#39;interactions&#39;][0])</span>
+<span class="sd">    [&#39;AMK&#39;, &#39;CEF&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; mtb_data = load_sample(&#39;mtb&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(mtb_data[&#39;clinical&#39;][&#39;interactions&#39;][0])</span>
+<span class="sd">    [&#39;EMBx&#39;, &#39;INH&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; saureus_data = load_sample(&#39;saureus&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(saureus_data[&#39;orthology&#39;][&#39;map&#39;][&#39;S_aureus&#39;][0:3])</span>
+<span class="sd">    [&#39;b0002&#39;, &#39;b0003&#39;, &#39;b0007&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; abaumannii_data = load_sample(&#39;abaumannii&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(abaumannii_data[&#39;orthology&#39;][&#39;map&#39;][&#39;A_baumannii&#39;][0:3])</span>
+<span class="sd">    [&#39;b0002&#39;, &#39;b0006&#39;, &#39;b0007&#39;]</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check inputs</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a string input&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">dataset</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;ecoli&#39;</span><span class="p">,</span> <span class="s1">&#39;mtb&#39;</span><span class="p">,</span> <span class="s1">&#39;saureus&#39;</span><span class="p">,</span> <span class="s1">&#39;abaumannii&#39;</span><span class="p">):</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Provide one of the following options: (&#39;ecoli&#39;, &#39;mtb&#39;, &#39;saureus&#39;, &#39;abaumannii&#39;).&quot;</span><span class="p">)</span>
+    <span class="c1"># Load queried dataset</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/sample_data.pkl&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span> 
+        <span class="n">ecoli_data</span><span class="p">,</span> <span class="n">mtb_data</span><span class="p">,</span> <span class="n">saureus_data</span><span class="p">,</span> <span class="n">abaumannii_data</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ecoli&#39;</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="n">ecoli_data</span>
+        <span class="k">elif</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;mtb&#39;</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="n">mtb_data</span>
+        <span class="k">elif</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;saureus&#39;</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="n">saureus_data</span>
+        <span class="k">elif</span> <span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;abaumannii&#39;</span><span class="p">:</span> 
+            <span class="k">return</span> <span class="n">abaumannii_data</span></div>
+
+
+<div class="viewcode-block" id="featurize"><a class="viewcode-back" href="../../indigopy.html#indigopy.core.featurize">[docs]</a><span class="k">def</span> <span class="nf">featurize</span><span class="p">(</span><span class="n">interactions</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> <span class="n">profiles</span><span class="p">:</span><span class="nb">dict</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">:</span><span class="nb">list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span><span class="nb">dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+              <span class="n">normalize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">norm_method</span><span class="p">:</span><span class="nb">str</span><span class="o">=</span><span class="s1">&#39;znorm&#39;</span><span class="p">,</span> <span class="n">na_handle</span><span class="p">:</span><span class="nb">float</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> 
+              <span class="n">binarize</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">:</span><span class="nb">tuple</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">remove_zero_rows</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+              <span class="n">entropy</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">time_values</span><span class="p">:</span><span class="nb">list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+              <span class="n">strains</span><span class="p">:</span><span class="nb">list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orthology_map</span><span class="p">:</span><span class="nb">dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">silent</span><span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span> 
+    <span class="sd">&quot;&quot;&quot;Determines ML features for a list of drug combinations. </span>
+<span class="sd">    </span>
+<span class="sd">    This function determines the feature information (i.e., joint profile) for a given drug combination. </span>
+<span class="sd">    The feature information is comprised of four pieces of information: </span>
+
+<span class="sd">        * **sigma scores**: indicative of the combined drug effect </span>
+<span class="sd">        * **delta scores**: indicative of drug-unique effects </span>
+<span class="sd">        * **entropy scores**: indicative of the combined entropy (optional) </span>
+<span class="sd">        * **time score**: indicative of time difference between treatments (optional) </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    interactions : list</span>
+<span class="sd">        A list of lists containing the drug names involved in a combination. </span>
+<span class="sd">    profiles : dict</span>
+<span class="sd">        A dictionary of profile information for individual drug treatments. </span>
+<span class="sd">    feature_names : list, optional</span>
+<span class="sd">        A list of feature names corresponding to the profile information (default is None). </span>
+<span class="sd">    key : dict, optional</span>
+<span class="sd">        A dictionary of mapping information between drug names in interactions and profiles (default is None). </span>
+<span class="sd">        key.keys() must correspond to profiles.keys() and key.values() must correspond to drug names in interactions.</span>
+<span class="sd">    normalize : bool, optional</span>
+<span class="sd">        Boolean flag to normalize drug profile data (default is False). </span>
+<span class="sd">    norm_method : str, optional</span>
+<span class="sd">        A string specifying the normalization method to use; choose between &#39;znorm&#39; or &#39;minmax&#39; (default is &#39;znorm&#39;). </span>
+<span class="sd">    na_handle : float, optional</span>
+<span class="sd">        A numeric value used for replacing any NaN values in profiles (default is 0.). </span>
+<span class="sd">    binarize : bool, optional</span>
+<span class="sd">        Boolean flag to binarize drug profile data (default is True). </span>
+<span class="sd">    thresholds : tuple, optional</span>
+<span class="sd">        A tuple of floating numbers indicative of (inclusive) thresholds for data binarization.</span>
+<span class="sd">    remove_zero_rows : bool, optional</span>
+<span class="sd">        Boolean flag for remove all-zero rows from profile data (default is False). </span>
+<span class="sd">    entropy : bool, optional</span>
+<span class="sd">        Boolean flag to determine entropy scores (default is False). </span>
+<span class="sd">    time : bool, optional</span>
+<span class="sd">        Boolean flag to determine time score (default is False). </span>
+<span class="sd">    time_values : list, optional</span>
+<span class="sd">        A list of time values to use for the time feature (default is None). </span>
+<span class="sd">        Length must match length of interactions list.</span>
+<span class="sd">    strains : list, optional</span>
+<span class="sd">        A list of strain names that correspond to interactions (default is None). </span>
+<span class="sd">        Length must match length of interactions list.</span>
+<span class="sd">    orthology_map : dict, optional</span>
+<span class="sd">        A dictionary of orthology information for each unique strain in strains (default is None). </span>
+<span class="sd">        Key entries must match the unique strain names in strains.</span>
+<span class="sd">    silent : bool, optional</span>
+<span class="sd">        Boolean flag to silence warnings (default is False). </span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary of feature information for the given list of drug combinations. </span>
+<span class="sd">        </span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        Raised when argument data dimensions do not correctly correspond to one another. </span>
+<span class="sd">    KeyError</span>
+<span class="sd">        Raised when a drug profile is not provided; bypassed with a warning indicating missing information. </span>
+<span class="sd">    TypeError</span>
+<span class="sd">        Raised when a given input type is incorrect. </span>
+<span class="sd">    ValueError</span>
+<span class="sd">        Raised when a given input value is incorrect. </span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Usage cases of the `featurize` function. </span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; interactions = [[&#39;A&#39;, &#39;B&#39;], [&#39;A&#39;, &#39;C&#39;], [&#39;B&#39;, &#39;C&#39;], [&#39;A&#39;, &#39;B&#39;, &#39;C&#39;]]</span>
+<span class="sd">    &gt;&gt;&gt; profiles = {&#39;A&#39;: [1, 0, 1], &#39;B&#39;: [-2, 1.5, -0.5], &#39;C&#39;: [1, 2, 3]}</span>
+<span class="sd">    &gt;&gt;&gt; out = featurize(interactions, profiles)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[&#39;feature_df&#39;])</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-feat3 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-feat3 | 0 | 1 | 1 | 0.666667 |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-feat3 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-feat3 | 0 | 1 | 1 | 1        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    &gt;&gt;&gt; feature_names = [&#39;G1&#39;, &#39;G2&#39;, &#39;G3&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; out = featurize(interactions, profiles, feature_names=feature_names)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[&#39;feature_df&#39;])</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-G1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-G2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-G3 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-G1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-G2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-G3 | 0 | 1 | 1 | 0.666667 |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-G1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-G2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-G3 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-G1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-G2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-G3 | 0 | 1 | 1 | 1        |</span>
+<span class="sd">    +--------------+---+---+---+----------+</span>
+<span class="sd">    &gt;&gt;&gt; profiles_alt = {&#39;Drug_A&#39;: [1, 0, 1], &#39;Drug_B&#39;: [-2, 1.5, -0.5], &#39;Drug_C&#39;: [1, 2, 3]}</span>
+<span class="sd">    &gt;&gt;&gt; key = {&#39;Drug_A&#39;: &#39;A&#39;, &#39;Drug_B&#39;: &#39;B&#39;, &#39;Drug_C&#39;: &#39;C&#39;}</span>
+<span class="sd">    &gt;&gt;&gt; silent = True</span>
+<span class="sd">    &gt;&gt;&gt; out = featurize(interactions, profiles_alt, key=key, silent=silent)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[&#39;feature_df&#39;])</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-feat3 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-feat3 | 0 | 1 | 1 | 0.666667 |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-feat3 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-feat1 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-feat2 | 0 | 0 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-feat3 | 0 | 1 | 1 | 1        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    &gt;&gt;&gt; normalize, norm_method, na_handle = True, &#39;minmax&#39;, 0</span>
+<span class="sd">    &gt;&gt;&gt; out = featurize(interactions, profiles, normalize=normalize, norm_method=norm_method)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[&#39;feature_df&#39;])</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | sigma-neg-feat1 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | sigma-neg-feat2 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | sigma-neg-feat3 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | sigma-pos-feat1 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | sigma-pos-feat2 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | sigma-pos-feat3 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | delta-neg-feat1 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | delta-neg-feat2 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | delta-neg-feat3 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | delta-pos-feat1 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | delta-pos-feat2 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    | delta-pos-feat3 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +-----------------+---+---+---+---+</span>
+<span class="sd">    &gt;&gt;&gt; binarize, thresholds, remove_zero_rows = True, (-1, 1), True</span>
+<span class="sd">    &gt;&gt;&gt; out = featurize(interactions, profiles, binarize=binarize, thresholds=thresholds, remove_zero_rows=remove_zero_rows)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[&#39;feature_df&#39;])</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-neg-feat1 | 1 | 0 | 1 | 0.666667 |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-feat2 | 1 | 1 | 2 | 1.33333  |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | sigma-pos-feat3 | 0 | 1 | 1 | 0.666667 |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-neg-feat1 | 1 | 0 | 1 | 1        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-feat2 | 1 | 1 | 0 | 0        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    | delta-pos-feat3 | 0 | 1 | 1 | 1        |</span>
+<span class="sd">    +-----------------+---+---+---+----------+</span>
+<span class="sd">    &gt;&gt;&gt; entropy, time, time_values = True, True, [[0, 0], [1, 1], [1, 2], [1, 2, 3]]</span>
+<span class="sd">    &gt;&gt;&gt; out = featurize(interactions, profiles, entropy=entropy, time=time, time_values=time_values)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[&#39;feature_df&#39;])</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | sigma-neg-feat1 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | sigma-neg-feat2 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | sigma-neg-feat3 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | sigma-pos-feat1 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | sigma-pos-feat2 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | sigma-pos-feat3 | 0         |  1        | 1        | 0.666667   |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | delta-neg-feat1 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | delta-neg-feat2 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | delta-neg-feat3 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | delta-pos-feat1 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | delta-pos-feat2 | 0         |  0        | 0        | 0          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | delta-pos-feat3 | 0         |  0.5      | 0.666667 | 0.5        |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | entropy-mean    | 0.0136995 | -0.549306 | 0.563006 | 0.00913299 |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | entropy-sum     | 0.027399  | -1.09861  | 1.12601  | 0.027399   |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    | time            | 0         |  1        | 1        | 3          |</span>
+<span class="sd">    +-----------------+-----------+-----------+----------+------------+</span>
+<span class="sd">    &gt;&gt;&gt; feature_names = [&#39;G1&#39;, &#39;G2&#39;, &#39;G3&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; strains = [&#39;MG1655&#39;, &#39;MG1655&#39;, &#39;MC1400&#39;, &#39;IAI1&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; orthology_map = {&#39;MG1655&#39;: [&#39;G1&#39;, &#39;G2&#39;], &#39;MC1400&#39;: [&#39;G1&#39;, &#39;G3&#39;], &#39;IAI1&#39;: [&#39;G1&#39;]}</span>
+<span class="sd">    &gt;&gt;&gt; out = featurize(interactions, profiles, feature_names=feature_names, strains=strains, orthology_map=orthology_map)</span>
+<span class="sd">    &gt;&gt;&gt; print(out[&#39;feature_df&#39;])</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | sigma-neg-G1 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | sigma-neg-G2 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | sigma-neg-G3 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | sigma-pos-G1 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | sigma-pos-G2 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | sigma-pos-G3 | 0 | 0 | 1 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | delta-neg-G1 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | delta-neg-G2 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | delta-neg-G3 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | delta-pos-G1 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | delta-pos-G2 | 0 | 0 | 0 | 0 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+<span class="sd">    | delta-pos-G3 | 0 | 1 | 1 | 1 |</span>
+<span class="sd">    +--------------+---+---+---+---+</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check inputs</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bool</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">normalize</span><span class="p">,</span> <span class="n">binarize</span><span class="p">,</span> <span class="n">remove_zero_rows</span><span class="p">,</span> <span class="n">entropy</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">silent</span><span class="p">)]):</span> 
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Invalid value (not Boolean) provided for normalize, binarize, remove_zero_rows, entropy, time, or silent&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">interactions</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">interactions</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a list of list elements for interactions&#39;</span><span class="p">)</span>
+    <span class="n">drug_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">drug</span> <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="n">interactions</span> <span class="k">for</span> <span class="n">drug</span> <span class="ow">in</span> <span class="n">interaction</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">drug_list</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Entries for each interaction must be of str type&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">drug</span> <span class="ow">in</span> <span class="n">drug_list</span> <span class="k">for</span> <span class="n">drug</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()]):</span> 
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">drug</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">drug</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a dict with valid key entries for profiles&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">if</span> <span class="n">silent</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span> 
+                <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Interaction entries do not match profile names, but key provided&#39;</span><span class="p">)</span>
+    <span class="n">profile_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">profile_values</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">values</span><span class="p">()]):</span> 
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Ensure that all values in profiles are list objects of equal size&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">profile_values</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Ensure that all elements in profile values are real numeric types&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">feature_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">feature_names</span><span class="p">]):</span> 
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a list of strings for feature_names&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">feature_names</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Provide </span><span class="si">{}</span><span class="s1"> elements for feature_names&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;feat</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">drug</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">drug</span> <span class="ow">in</span> <span class="n">profiles</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span> <span class="ow">or</span> 
+            <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">drug</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">for</span> <span class="n">drug</span> <span class="ow">in</span> <span class="n">drug_list</span><span class="p">])):</span> 
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a dict with valid key and value entries for key&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">normalize</span> <span class="ow">and</span> <span class="n">norm_method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;znorm&#39;</span><span class="p">,</span> <span class="s1">&#39;minmax&#39;</span><span class="p">):</span> 
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Provide &quot;znorm&quot; or &quot;minmax&quot; for norm_method&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">na_handle</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">na_handle</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a real numeric value for na_handle&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">tuple</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">thresholds</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a tuple of real numeric elements for thresholds&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span> 
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Provide 2 elements for thresholds argument&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">time_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">time</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">time_values</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">interactions</span><span class="p">]):</span> 
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a list of list elements for time_values&#39;</span><span class="p">)</span>
+        <span class="n">time_entries</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_values</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">t</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">time_entries</span><span class="p">])</span> <span class="ow">and</span> 
+            <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">time_entries</span><span class="p">])):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;All time value entries must be whole numbers&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">time_values</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">interactions</span><span class="p">):</span> 
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Length of time_values must match length of interactions&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">time_values</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">time</span><span class="p">:</span> 
+        <span class="n">time_values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ixn</span> <span class="ow">in</span> <span class="n">interactions</span><span class="p">:</span> 
+            <span class="n">time_values</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">ixn</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">strains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strains</span><span class="p">]):</span> 
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;All entries in strains must be of str type&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">strains</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">interactions</span><span class="p">):</span> 
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Length of strains must match length of interactions (N = </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">interactions</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">orthology_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;orthology_map is None while strains is not None. Provide a dict for orthology_map&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">orthology_map</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">strain</span> <span class="ow">in</span> <span class="n">orthology_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">for</span> <span class="n">strain</span> <span class="ow">in</span> <span class="n">strains</span><span class="p">])):</span> 
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a dict with valid key entries for orthology_map&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Modify profile names (if key is provided)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">profiles</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="c1"># df = df.rename(columns=key)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">key</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Extract relevant drug profiles</span>
+    <span class="n">keep_ixns</span> <span class="o">=</span> <span class="p">[</span><span class="nb">all</span><span class="p">(</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ixn</span><span class="p">)</span> <span class="k">for</span> <span class="n">ixn</span> <span class="ow">in</span> <span class="n">interactions</span><span class="p">]</span>
+    <span class="n">ixn_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ixn</span> <span class="k">for</span> <span class="n">ixn</span> <span class="ow">in</span> <span class="n">interactions</span> <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ixn</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ixn_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">interactions</span><span class="p">):</span> 
+        <span class="k">if</span> <span class="n">silent</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span> 
+            <span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Drug profile information missing for </span><span class="si">{}</span><span class="s1"> interactions&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">interactions</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">ixn_list</span><span class="p">)))</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="nb">set</span><span class="p">([</span><span class="n">drug</span> <span class="k">for</span> <span class="n">ixn</span> <span class="ow">in</span> <span class="n">ixn_list</span> <span class="k">for</span> <span class="n">drug</span> <span class="ow">in</span> <span class="n">ixn</span><span class="p">])]</span>
+
+    <span class="c1"># Handle NaNs</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">na_handle</span><span class="p">)</span>
+
+    <span class="c1"># Apply data processing (as prompted)</span>
+    <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">norm_method</span> <span class="o">==</span> <span class="s1">&#39;znorm&#39;</span><span class="p">:</span> 
+            <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span> <span class="o">-</span> <span class="n">df</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">/</span> <span class="n">df</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">norm_method</span> <span class="o">==</span> <span class="s1">&#39;minmax&#39;</span><span class="p">:</span> 
+            <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span> <span class="o">-</span> <span class="n">df</span><span class="o">.</span><span class="n">min</span><span class="p">())</span> <span class="o">/</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">df</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">binarize</span><span class="p">:</span> 
+        <span class="n">bin_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span> <span class="o">&lt;</span> <span class="n">thresholds</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">df</span> <span class="o">&gt;</span> <span class="n">thresholds</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;neg-&#39;</span> <span class="o">+</span> <span class="n">feature</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_names</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;pos-&#39;</span> <span class="o">+</span> <span class="n">feature</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_names</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span> 
+        <span class="n">bin_df</span> <span class="o">=</span> <span class="n">df</span>
+    <span class="k">if</span> <span class="n">remove_zero_rows</span><span class="p">:</span> 
+        <span class="n">zero_index</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_df</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bin_df</span> <span class="o">=</span> <span class="n">bin_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="n">zero_index</span><span class="p">]</span>
+        <span class="n">feature_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">compress</span><span class="p">(</span><span class="n">feature_names</span><span class="p">,</span> <span class="p">(</span><span class="o">~</span><span class="n">zero_index</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+
+    <span class="c1"># Determine ML features</span>
+    <span class="n">feature_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sigma-&#39;</span> <span class="o">+</span> <span class="n">feature</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_names</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;delta-&#39;</span> <span class="o">+</span> <span class="n">feature</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">feature_names</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">entropy</span><span class="p">:</span> 
+        <span class="n">feature_list</span> <span class="o">=</span> <span class="n">feature_list</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;entropy-mean&#39;</span><span class="p">,</span> <span class="s1">&#39;entropy-sum&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">time</span><span class="p">:</span> 
+        <span class="n">feature_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+    <span class="n">feature_dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ixn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ixn_list</span><span class="p">):</span> 
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">bin_df</span><span class="p">[</span><span class="n">ixn</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">ixn</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="p">(</span><span class="n">time</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">time_values</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span> 
+            <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_df</span><span class="p">[</span><span class="n">ixn</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+            <span class="n">delim</span> <span class="o">=</span> <span class="s1">&#39; + &#39;</span>
+        <span class="k">elif</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">time_values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_values</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span> 
+                <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">bin_df</span><span class="p">[</span><span class="n">ixn</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float&#39;</span><span class="p">)</span>
+                <span class="n">delim</span> <span class="o">=</span> <span class="s1">&#39; + &#39;</span>
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">((</span><span class="n">bin_df</span><span class="p">[</span><span class="n">ixn</span><span class="p">]</span> <span class="o">*</span> <span class="n">time_values</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">ixn</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">time_values</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="n">delim</span> <span class="o">=</span> <span class="s1">&#39; -&gt; &#39;</span>
+        <span class="n">feat_data</span> <span class="o">=</span> <span class="n">sigma</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">+</span> <span class="n">delta</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">entropy</span><span class="p">:</span> 
+            <span class="n">feat_data</span> <span class="o">=</span> <span class="n">feat_data</span> <span class="o">+</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">ixn</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">ixn</span><span class="p">]</span><span class="o">.</span><span class="n">var</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">time</span><span class="p">:</span> 
+            <span class="n">feat_data</span> <span class="o">=</span> <span class="n">feat_data</span> <span class="o">+</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">time_values</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">feature_dict_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; - dup&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">feature_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())]</span>
+        <span class="n">n_key</span> <span class="o">=</span> <span class="n">feature_dict_keys</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">delim</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ixn</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">n_key</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span> 
+            <span class="n">feature_dict</span><span class="p">[</span><span class="n">delim</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ixn</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; - dup&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n_key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">feat_data</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">feature_dict</span><span class="p">[</span><span class="n">delim</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ixn</span><span class="p">)]</span> <span class="o">=</span> <span class="n">feat_data</span>
+    <span class="n">feature_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">feature_dict</span><span class="p">)</span>
+    <span class="n">feature_df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">feature_list</span>
+
+    <span class="c1"># Apply orthology mapping (if strains is not None)</span>
+    <span class="k">if</span> <span class="n">strains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">strains</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">compress</span><span class="p">(</span><span class="n">strains</span><span class="p">,</span> <span class="n">keep_ixns</span><span class="p">))</span>
+        <span class="n">strain_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">strains</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">strain</span> <span class="ow">in</span> <span class="n">strain_set</span><span class="p">:</span> 
+            <span class="n">orthologs</span> <span class="o">=</span> <span class="n">orthology_map</span><span class="p">[</span><span class="n">strain</span><span class="p">]</span>
+            <span class="n">row_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">feature</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">feature_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;sigma&#39;</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">any</span><span class="p">([</span><span class="n">gene</span> <span class="o">==</span> <span class="n">feature</span><span class="p">[</span><span class="mi">10</span><span class="p">:]</span> <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">orthologs</span><span class="p">]))]</span>
+            <span class="n">col_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="o">==</span> <span class="n">strain</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strains</span><span class="p">]</span>
+            <span class="n">feature_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">row_mask</span><span class="p">,</span> <span class="n">col_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">feature_dict</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">feature_df</span><span class="p">)</span>
+
+    <span class="c1"># return {&#39;interaction_list&#39;: ixn_list, &#39;drug_profiles&#39;: df, &#39;feature_df&#39;: feature_df, &#39;feature_list&#39;: feature_list, &#39;feature_dict&#39;: feature_dict}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;interaction_list&#39;</span><span class="p">:</span> <span class="n">ixn_list</span><span class="p">,</span> <span class="s1">&#39;drug_profiles&#39;</span><span class="p">:</span> <span class="n">df</span><span class="p">,</span> <span class="s1">&#39;feature_df&#39;</span><span class="p">:</span> <span class="n">feature_df</span><span class="p">,</span> <span class="s1">&#39;idx&#39;</span><span class="p">:</span> <span class="n">keep_ixns</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="classify"><a class="viewcode-back" href="../../indigopy.html#indigopy.core.classify">[docs]</a><span class="k">def</span> <span class="nf">classify</span><span class="p">(</span><span class="n">scores</span><span class="p">:</span><span class="nb">list</span><span class="p">,</span> <span class="n">thresholds</span><span class="p">:</span><span class="nb">tuple</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">classes</span><span class="p">:</span><span class="nb">tuple</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Synergy&#39;</span><span class="p">,</span> <span class="s1">&#39;Neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;Antagonism&#39;</span><span class="p">)):</span> 
+    <span class="sd">&quot;&quot;&quot;Converts drug interaction scores into interaction classes. </span>
+<span class="sd">    </span>
+<span class="sd">    Score-to-class conversion is based on the general convention for synergy (negative) and antagonism (positive)</span>
+<span class="sd">    for interaction outcomes measured based on the Loewe Additivity or Bliss Independence models. </span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scores : list</span>
+<span class="sd">        A list of drug interaction scores. </span>
+<span class="sd">    thresholds : tuple, optional</span>
+<span class="sd">        A tuple of two floating numbers indicative of (inclusive) thresholds for synergy and antagonism, repectively.</span>
+<span class="sd">    classes : tuple, optional</span>
+<span class="sd">        A tuple of three strings representative of class labels. By default, the three classes are Synergy, Neutral, and Antagonism.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        A list of class labels for the given list of interaction scores. </span>
+<span class="sd">        </span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AssertionError</span>
+<span class="sd">        Raised when the wrong number of elements is provided for `thresholds` or `classes`. </span>
+<span class="sd">    TypeError</span>
+<span class="sd">        Raised when a given input type is incorrect. </span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Usage cases of the `classify` function. </span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; scores = [-2, 1.5, 0.5, -0.1, 1]</span>
+<span class="sd">    &gt;&gt;&gt; classify(scores)</span>
+<span class="sd">    [&#39;Synergy&#39;, &#39;Antagonism&#39;, &#39;Antagonism&#39;, &#39;Synergy&#39;, &#39;Antagonism&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; thresholds = (-1, 1)</span>
+<span class="sd">    &gt;&gt;&gt; classify(scores, thresholds=thresholds)</span>
+<span class="sd">    [&#39;Synergy&#39;, &#39;Antagonism&#39;, &#39;Neutral&#39;, &#39;Neutral&#39;, &#39;Antagonism&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; classes = (&#39;S&#39;, &#39;N&#39;, &#39;A&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; classify(scores, thresholds=thresholds, classes=classes)</span>
+<span class="sd">    [&#39;S&#39;, &#39;A&#39;, &#39;N&#39;, &#39;N&#39;, &#39;A&#39;]</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check inputs</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">scores</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a list of real numeric elements for scores&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">tuple</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">float</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">thresholds</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a tuple of real numeric elements for thresholds&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">thresholds</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span> 
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Provide 2 elements for thresholds argument&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">tuple</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">classes</span><span class="p">]):</span> 
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Provide a tuple of string elements for classes&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span> 
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Provide 3 elements for classes argument&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Determine class type for scores</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">scores</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">thresholds</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> 
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">thresholds</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classes</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span> 
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">labels</span></div>
+
+</pre></div>
+
+          </div>
+          <div class="page-nav">
+            <div class="inner"><ul class="page-nav">
+</ul><div class="footer" role="contentinfo">
+      &#169; Copyright 2022, sriram-lab.
+    <br>
+    Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0 with <a href="https://github.com/schettino72/sphinx_press_theme">Press Theme</a> 0.8.0.
+</div>
+            </div>
+          </div>
+      </page>
+    </div></div>
+    
+    
+  </body>
+</html>
