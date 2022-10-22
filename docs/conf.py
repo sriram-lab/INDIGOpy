@@ -14,17 +14,17 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-from unittest.mock import MagicMock
-MOCK_MODULES = ['numpy', 'pandas']
-for mod in MOCK_MODULES: 
-	sys.modules[mod] = MagicMock()
-
+# from unittest.mock import MagicMock
+# MOCK_MODULES = ['os', 'pickle', 'numpy', 'pandas', 'itertools', 'warnings']
+# for mod in MOCK_MODULES: 
+# 	sys.modules[mod] = MagicMock()
+autodoc_mock_imports = ['numpy', 'pandas']
 
 # -- Project information -----------------------------------------------------
 
 project = 'INDIGOpy'
-copyright = '2022, chechung'
-author = 'chechung'
+copyright = '2022, sriram-lab'
+author = 'sriram-lab'
 
 
 # -- General configuration ---------------------------------------------------
