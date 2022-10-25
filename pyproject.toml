@@ -12,7 +12,7 @@ dynamic = ["version", "description"]
 requires-python = ">=3.8"
 dependecies = [
 	"sphinx >=5.3", 
-	"sphinx-press-theme >=0.8", 
+	"sphinx-rtd-theme >=1.0", 
 	"numpy >=1.23", 
 	"pandas >=1.5", 
 ]
