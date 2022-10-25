@@ -448,7 +448,7 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     if len(ixn_list) < len(interactions): 
         if silent is False: 
             warn('Drug profile information missing for {} interactions'.format(len(interactions) - len(ixn_list)))
-    df = df[set([drug for ixn in ixn_list for drug in ixn])]
+    df = df[list(set([drug for ixn in ixn_list for drug in ixn]))]
 
     # Handle NaNs
     df = df.fillna(na_handle)
