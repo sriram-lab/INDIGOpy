@@ -8,9 +8,11 @@ Welcome to INDIGOpy's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: User Guide
 
    modules
+   notebooks/indigopy_demo
+   notebooks/prepare_data_from_xlsx
 
 Indices and tables
 ==================

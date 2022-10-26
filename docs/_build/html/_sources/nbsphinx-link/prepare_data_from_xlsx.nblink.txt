@@ -1,0 +1,3 @@
+{
+	"path": "../../examples/prepare_data_from_xlsx.ipynb"
+}
