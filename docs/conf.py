@@ -23,7 +23,7 @@ autodoc_mock_imports = ['numpy', 'pandas']
 # -- Project information -----------------------------------------------------
 
 project = 'INDIGOpy'
-copyright = '2022, sriram-lab'
+copyright = '2022, Chandrasekaran Lab, University of Michigan'
 author = 'sriram-lab'
 
 
