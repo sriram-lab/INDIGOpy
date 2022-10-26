@@ -11,7 +11,7 @@ Chandrasekaran Research Group - https://systemsbiologylab.org/
 Contact: csriram@umich.edu  
 
 # Installation and execution  
-Refer to the official [INDIGOpy documentation]() for installation instructions and example code.  
+Refer to the official [INDIGOpy documentation](https://sriram-lab-indigopy.readthedocs.io/en/latest/) for installation instructions and example code.  
 
 ## References to build package
 * https://www.freecodecamp.org/news/build-your-first-python-package/
@@ -43,6 +43,7 @@ INDIGOpy
 - [X] Configure `LICENSE` file
 - [ ] Configure `setup.py` file
 - [X] Create + populate `docs/` directory using Sphinx
+- [X] Replicate documentation into Read The Docs (RTD)
 - [X] Create + populate `examples/` directory
 - [X] Create + populate `indigopy/` package
 - [X] Create + populate `tests/` directory 
