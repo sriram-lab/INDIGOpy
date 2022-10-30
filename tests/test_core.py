@@ -57,7 +57,7 @@ class TestFeaturize:
     profiles            = {'A': [1, float('nan'), 1], 'B': [-2, 1.5, -0.5], 'C': [1, 2, 3]}
     profiles_alt        = {'Drug_A': [1, float('nan'), 1], 'Drug_B': [-2, 1.5, -0.5], 'Drug_C': [1, 2, 3]}
     feature_names       = ['G1', 'G2', 'G3']
-    key                 = {'Drug_A': 'A', 'Drug_B': 'B', 'Drug_C': 'C'}
+    key                 = [('A', 'Drug_A'), ('B', 'Drug_B'), ('C', 'Drug_C')]
     normalize           = True
     norm_method         = 'minmax'
     na_handle           = 0

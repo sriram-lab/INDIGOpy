@@ -7,6 +7,7 @@ import os
 import pickle
 import numpy as np
 import pandas as pd
+from tqdm import tqdm
 from warnings import warn
 from itertools import compress
 
@@ -100,7 +101,7 @@ def load_sample(dataset:str):
             return abaumannii_data
 
 
-def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dict=None, 
+def featurize(interactions:list, profiles:dict, feature_names:list=None, key:list=None, 
               normalize:bool=False, norm_method:str='znorm', na_handle:float=0., 
               binarize:bool=True, thresholds:tuple=(-2, 2), remove_zero_rows:bool=False, 
               entropy:bool=False, time:bool=False, time_values:list=None, 
@@ -123,9 +124,10 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
         A dictionary of profile information for individual drug treatments. 
     feature_names : list, optional
         A list of feature names corresponding to the profile information (default is None). 
-    key : dict, optional
-        A dictionary of mapping information between drug names in interactions and profiles (default is None). 
-        key.keys() must correspond to profiles.keys() and key.values() must correspond to drug names in interactions.
+    key : list, optional
+        A list of tuple pairs containing mapping information between drug names in interactions and profiles (default is None).
+        The first element of each tuple must correspond to drug names in interactions.
+        The second element of each tuple must exist in profiles.keys().
     normalize : bool, optional
         Boolean flag to normalize drug profile data (default is False). 
     norm_method : str, optional
@@ -216,7 +218,7 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
         delta-pos-G3, 0, 1, 1, 1
 
     >>> profiles_alt = {'Drug_A': [1, 0, 1], 'Drug_B': [-2, 1.5, -0.5], 'Drug_C': [1, 2, 3]}
-    >>> key = {'Drug_A': 'A', 'Drug_B': 'B', 'Drug_C': 'C'}
+    >>> key = [('A', 'Drug_A'), ('B', 'Drug_B'), ('C', 'Drug_C')]
     >>> silent = True
     >>> out = featurize(interactions, profiles_alt, key=key, silent=silent)
     >>> print(out['feature_df'])
@@ -326,7 +328,7 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     if not all([type(x) is str for x in drug_list]): 
         raise TypeError('Entries for each interaction must be of str type')
     if type(profiles) is not dict or not any([drug in drug_list for drug in profiles.keys()]): 
-        if key is None or not any(drug in key.keys() for drug in profiles.keys()):
+        if key is None or not any(drug in [entry[1] for entry in key] for drug in profiles.keys()):
             raise TypeError('Provide a dict with valid key entries for profiles')
         else: 
             if silent is False: 
@@ -345,9 +347,9 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     else: 
         feature_names = ['feat{}'.format(i) for i in range(1, n+1)]
     if key is not None: 
-        if (type(key) is not dict or not any([drug in key.keys() for drug in profiles.keys()]) or 
-            not any([drug in list(key.values()) for drug in drug_list])): 
-                raise TypeError('Provide a dict with valid key and value entries for key')
+        if (type(key) is not list or not any([drug in [entry[1] for entry in key] for drug in profiles.keys()]) or 
+            not any([drug in [entry[0] for entry in key] for drug in drug_list])): 
+                raise TypeError('Provide a list with valid tuple entries for key')
     if normalize and norm_method not in ('znorm', 'minmax'): 
         raise ValueError('Provide "znorm" or "minmax" for norm_method')
     if not any([type(na_handle) is int or type(na_handle) is float]): 
@@ -384,8 +386,9 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     # Modify profile names (if key is provided)
     df = pd.DataFrame.from_dict(profiles)
     if key is not None: 
-        # df = df.rename(columns=key)
-        df = pd.concat([df, df.rename(columns=key)], axis=1)
+        # df = pd.concat([df, df.rename(columns=key)], axis=1)
+        for entry in key: 
+            df[entry[0]] = df[entry[1]]
         df = df.loc[:, ~df.columns.duplicated()].copy()
 
     # Extract relevant drug profiles
@@ -422,7 +425,7 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     if time: 
         feature_list.append('time')
     feature_dict = {}
-    for i, ixn in enumerate(ixn_list): 
+    for i, ixn in enumerate(tqdm(ixn_list, desc='Defining INDIGO features')): 
         sigma = bin_df[ixn].sum(axis=1) * (2 / len(ixn))
         if time is False or (time is True and time_values is None): 
             delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
@@ -452,14 +455,13 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:dic
     if strains is not None: 
         strains = list(compress(strains, keep_ixns))
         strain_set = set(strains)
-        for strain in strain_set: 
+        for strain in tqdm(strain_set, desc='Mapping orthologous genes'): 
             orthologs = orthology_map[strain]
             row_mask = [feature for feature in list(feature_df.index) if (feature.startswith('sigma')) & (not any([gene == feature[10:] for gene in orthologs]))]
             col_mask = [s == strain for s in strains]
             feature_df.loc[row_mask, col_mask] = 0
         feature_dict = pd.DataFrame.to_dict(feature_df)
 
-    # return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'feature_list': feature_list, 'feature_dict': feature_dict}
     return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'idx': keep_ixns}
 
 
