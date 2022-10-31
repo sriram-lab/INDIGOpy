@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to INDIGOpy's documentation!
-====================================
+INDIGOpy: the Python implementation of INDIGO
+=============================================
+INDIGO (INferring Drug Interactions using chemoGenomics and Orthology) is a machine learning approach for designing combination therapies.  
+More information can be found in the `INDIGO publication <https://doi.org/10.15252/msb.20156777>`_.
 
 .. toctree::
    :maxdepth: 2

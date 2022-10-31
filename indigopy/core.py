@@ -460,7 +460,6 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
             row_mask = [feature for feature in list(feature_df.index) if (feature.startswith('sigma')) & (not any([gene == feature[10:] for gene in orthologs]))]
             col_mask = [s == strain for s in strains]
             feature_df.loc[row_mask, col_mask] = 0
-        feature_dict = pd.DataFrame.to_dict(feature_df)
 
     return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'idx': keep_ixns}
 
