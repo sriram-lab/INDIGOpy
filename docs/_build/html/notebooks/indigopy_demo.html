@@ -42,7 +42,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../modules.html">INDIGOpy</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">How to use <code class="docutils literal notranslate"><span class="pre">indigopy</span></code></a><ul>
@@ -295,7 +295,6 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
-.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -304,14 +303,10 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
-.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
-.jp-RenderedHTMLCommon tr,
-.jp-RenderedHTMLCommon th,
-.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -323,15 +318,12 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
-.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
-.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
-.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
@@ -360,222 +352,90 @@ div.rendered_html tbody tr:hover {
 </style>
 <section id="How-to-use-indigopy">
 <h1>How to use <code class="docutils literal notranslate"><span class="pre">indigopy</span></code><a class="headerlink" href="#How-to-use-indigopy" title="Permalink to this heading"></a></h1>
-<p>Example code for how to use the <code class="docutils literal notranslate"><span class="pre">indigopy</span></code> package.</p>
+<p>Example code for how to use the <code class="docutils literal notranslate"><span class="pre">indigopy</span></code> package. The sample data used in this example notebook is derived from the <a class="reference external" href="https://doi.org/10.1007/978-1-4939-8891-4_13">INDIGO</a>, <a class="reference external" href="https://doi.org/10.1128/mbio.02627-19">INDIGO-MTB</a>, and <a class="reference external" href="https://doi.org/10.1371/journal.pcbi.1006677">MAGENTA</a> publications.</p>
 <section id="Set-up-environment">
 <h2>Set up environment<a class="headerlink" href="#Set-up-environment" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import dependencies</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">spearmanr</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">r2_score</span><span class="p">,</span> <span class="n">classification_report</span>
-<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="n">RandomForestRegressor</span>
-<span class="kn">import</span> <span class="nn">plotly.graph_objects</span> <span class="k">as</span> <span class="nn">go</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Import dependencies
+import pandas as pd
+from scipy.stats import spearmanr
+from sklearn.metrics import r2_score, classification_report
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-<span class="c1"># Import package functions</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;c:/Users/User/github/INDIGOpy/&#39;</span><span class="p">)</span> <span class="c1"># modify if testing locally in different machine; remove once package is published</span>
-<span class="kn">from</span> <span class="nn">indigopy.core</span> <span class="kn">import</span> <span class="n">load_sample</span><span class="p">,</span> <span class="n">featurize</span><span class="p">,</span> <span class="n">classify</span>
+# Import package functions
+import sys
+sys.path.append(&#39;c:/Users/carol/github/INDIGOpy/&#39;) # modify if testing locally in different machine; remove once package is published
+from indigopy.core import load_sample, featurize, classify
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Example:-E.-coli">
 <h2>Example: <em>E. coli</em><a class="headerlink" href="#Example:-E.-coli" title="Permalink to this heading"></a></h2>
-<div class="nbinput nblast docutils container">
+<div class="line-block">
+<div class="line">The following analysis and results were originally reported in the <a class="reference external" href="https://doi.org/10.1007/978-1-4939-8891-4_13">INDIGO</a> paper.</div>
+<div class="line">- <strong>Training dataset</strong>: 105 two-way interactions between 15 antibiotics</div>
+<div class="line">- <strong>Testing dataset</strong>: 66 two-way interactions between the 15 antibiotics in the training set + 4 new antibiotics</div>
+</div>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load sample data</span>
-<span class="n">sample</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="s1">&#39;ecoli&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Load sample data
+sample = load_sample(&#39;ecoli&#39;)
 
-<span class="c1"># Define input arguments</span>
-<span class="n">key</span>             <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span>
-<span class="n">profiles</span>        <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;profiles&#39;</span><span class="p">]</span>
-<span class="n">feature_names</span>   <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;feature_names&#39;</span><span class="p">]</span>
-<span class="n">train_ixns</span>      <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">train_scores</span>    <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-<span class="n">test_ixns</span>       <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">test_scores</span>     <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
+# Define input arguments
+key             = sample[&#39;key&#39;]
+profiles        = sample[&#39;profiles&#39;]
+feature_names   = sample[&#39;feature_names&#39;]
+train_ixns      = sample[&#39;train&#39;][&#39;interactions&#39;]
+train_scores    = sample[&#39;train&#39;][&#39;scores&#39;]
+test_ixns       = sample[&#39;test&#39;][&#39;interactions&#39;]
+test_scores     = sample[&#39;test&#39;][&#39;scores&#39;]
 
-<span class="c1"># Determine ML features</span>
-<span class="n">train_data</span>      <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">train_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">test_data</span>       <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">test_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">test_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-<br/></pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+# Determine ML features
+train_data      = featurize(train_ixns, profiles, feature_names=feature_names, key=key, silent=True)
+test_data       = featurize(test_ixns, profiles, feature_names=feature_names, key=key, silent=True)
+X_train, X_test = train_data[&#39;feature_df&#39;].to_numpy().transpose(), test_data[&#39;feature_df&#39;].to_numpy().transpose()
+
+# Determine class labels
+thresh, classes = (-0.5, 2), (&#39;S&#39;, &#39;N&#39;, &#39;A&#39;)
+train_labels    = classify(train_scores, thresholds=thresh, classes=classes)
+test_labels     = classify(test_scores, thresholds=thresh, classes=classes)
+
+# Train and apply a regression-based model
+reg_model = RandomForestRegressor()
+reg_model.fit(X_train, train_scores)
+reg_y = reg_model.predict(X_test)
+r, p = spearmanr(test_scores, reg_y)
+r2 = r2_score(test_scores, reg_y)
+print(&#39;Regression results:&#39;)
+print(&#39;\tSpearman R = {}&#39;.format(round(r, 4)))
+print(&#39;\tSpearman p = {:.3g}&#39;.format(p))
+print(&#39;\tR2 = {}&#39;.format(round(r2, 4)))
+
+# Train and apply a classification-based model
+class_model = RandomForestClassifier()
+class_model.fit(X_train, train_labels)
+class_y = class_model.predict(X_test)
+print(&#39;Classification results:&#39;)
+print(classification_report(test_labels, class_y))
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">])</span>
-</pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-                        AMK + FUS  AMK + RIF  AMK + SPE  AMK + VAN  CEF + FUS  \
-sigma-neg-ECK1963-HCHA        0.0        0.0        0.0        1.0        0.0
-sigma-neg-ECK1488-PQQL        0.0        0.0        0.0        0.0        0.0
-sigma-neg-ECK0813-YBIW        0.0        0.0        0.0        0.0        0.0
-sigma-neg-ECK2456-EUTP        0.0        0.0        0.0        0.0        0.0
-sigma-neg-ECK3716-BGLG        0.0        0.0        0.0        0.0        0.0
-...                           ...        ...        ...        ...        ...
-delta-pos-ECK2585-KGTP        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK1179-CVRA        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK3002-YQHC        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK3103-TDCE        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK3742-RBSD        0.0        0.0        0.0        0.0        0.0
-
-                        CEF + RIF  CEF + SPE  CEF + VAN  CHL + FUS  CHL + RIF  \
-sigma-neg-ECK1963-HCHA        0.0        0.0        1.0        0.0        0.0
-sigma-neg-ECK1488-PQQL        0.0        0.0        0.0        0.0        0.0
-sigma-neg-ECK0813-YBIW        0.0        0.0        0.0        0.0        0.0
-sigma-neg-ECK2456-EUTP        0.0        0.0        0.0        0.0        0.0
-sigma-neg-ECK3716-BGLG        0.0        0.0        0.0        0.0        0.0
-...                           ...        ...        ...        ...        ...
-delta-pos-ECK2585-KGTP        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK1179-CVRA        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK3002-YQHC        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK3103-TDCE        0.0        0.0        0.0        1.0        1.0
-delta-pos-ECK3742-RBSD        0.0        0.0        0.0        1.0        1.0
-
-                        ...  RIF + TOB  RIF + TMP  RIF + VAN  SPE + TET  \
-sigma-neg-ECK1963-HCHA  ...        0.0        0.0        1.0        0.0
-sigma-neg-ECK1488-PQQL  ...        0.0        0.0        0.0        0.0
-sigma-neg-ECK0813-YBIW  ...        0.0        1.0        0.0        0.0
-sigma-neg-ECK2456-EUTP  ...        0.0        0.0        0.0        0.0
-sigma-neg-ECK3716-BGLG  ...        0.0        0.0        0.0        0.0
-...                     ...        ...        ...        ...        ...
-delta-pos-ECK2585-KGTP  ...        0.0        0.0        0.0        0.0
-delta-pos-ECK1179-CVRA  ...        0.0        0.0        0.0        0.0
-delta-pos-ECK3002-YQHC  ...        0.0        0.0        0.0        1.0
-delta-pos-ECK3103-TDCE  ...        0.0        0.0        0.0        0.0
-delta-pos-ECK3742-RBSD  ...        0.0        0.0        0.0        0.0
-
-                        SPE + TOB  SPE + TMP  SPE + VAN  TET + VAN  TOB + VAN  \
-sigma-neg-ECK1963-HCHA        0.0        0.0        1.0        1.0        1.0
-sigma-neg-ECK1488-PQQL        0.0        0.0        0.0        0.0        0.0
-sigma-neg-ECK0813-YBIW        0.0        1.0        0.0        0.0        0.0
-sigma-neg-ECK2456-EUTP        0.0        0.0        0.0        0.0        0.0
-sigma-neg-ECK3716-BGLG        0.0        0.0        0.0        0.0        0.0
-...                           ...        ...        ...        ...        ...
-delta-pos-ECK2585-KGTP        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK1179-CVRA        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK3002-YQHC        0.0        0.0        0.0        1.0        0.0
-delta-pos-ECK3103-TDCE        0.0        0.0        0.0        0.0        0.0
-delta-pos-ECK3742-RBSD        0.0        0.0        0.0        0.0        0.0
-
-                        TMP + VAN
-sigma-neg-ECK1963-HCHA        1.0
-sigma-neg-ECK1488-PQQL        0.0
-sigma-neg-ECK0813-YBIW        1.0
-sigma-neg-ECK2456-EUTP        0.0
-sigma-neg-ECK3716-BGLG        0.0
-...                           ...
-delta-pos-ECK2585-KGTP        0.0
-delta-pos-ECK1179-CVRA        0.0
-delta-pos-ECK3002-YQHC        0.0
-delta-pos-ECK3103-TDCE        0.0
-delta-pos-ECK3742-RBSD        0.0
-
-[15916 rows x 66 columns]
+Defining INDIGO features: 100%|██████████| 105/105 [00:00&lt;00:00, 406.95it/s]
+Defining INDIGO features: 100%|██████████| 66/66 [00:00&lt;00:00, 464.53it/s]
 </pre></div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><br/><span></span><span class="c1"># Determine class labels</span>
-<span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
-<span class="n">train_labels</span>    <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">train_scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
-<span class="n">test_labels</span>     <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
-
-<span class="c1"># Train and apply a regression-based model</span>
-<span class="n">reg_model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
-<span class="n">reg_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_scores</span><span class="p">)</span>
-<span class="n">reg_y</span> <span class="o">=</span> <span class="n">reg_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">spearmanr</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y</span><span class="p">)</span>
-<span class="n">r2</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman R = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman p = </span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">R2 = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-
-<span class="c1"># Train and apply a classification-based model</span>
-<span class="n">class_model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
-<span class="n">class_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
-<span class="n">class_y</span> <span class="o">=</span> <span class="n">class_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Classification results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">class_y</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="Example:-M.-tuberculosis">
-<h2>Example: <em>M. tuberculosis</em><a class="headerlink" href="#Example:-M.-tuberculosis" title="Permalink to this heading"></a></h2>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load sample data</span>
-<span class="n">sample</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="s1">&#39;mtb&#39;</span><span class="p">)</span>
-
-<span class="c1"># Define input arguments</span>
-<span class="n">key</span>             <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span>
-<span class="n">profiles</span>        <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;profiles&#39;</span><span class="p">]</span>
-<span class="n">feature_names</span>   <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;feature_names&#39;</span><span class="p">]</span>
-<span class="n">train_ixns</span>      <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">train_scores</span>    <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-<span class="n">test_ixns</span>       <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">test_scores</span>     <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-<span class="n">clinical_ixns</span>   <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;clinical&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">clinical_scores</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;clinical&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-
-<span class="c1"># Determine ML features</span>
-<span class="n">train_data</span>      <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">train_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">test_data</span>       <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">test_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">clinical_data</span>   <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">clinical_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">test_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-<span class="n">X_clinical</span>      <span class="o">=</span> <span class="n">clinical_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-
-<span class="c1"># Determine class labels</span>
-<span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
-<span class="n">train_labels</span>    <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">train_scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
-<span class="n">test_labels</span>     <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
-
-<span class="c1"># Train and apply a regression-based model</span>
-<span class="n">reg_model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
-<span class="n">reg_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_scores</span><span class="p">)</span>
-<span class="n">reg_y</span> <span class="o">=</span> <span class="n">reg_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">spearmanr</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y</span><span class="p">)</span>
-<span class="n">r2</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman R = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman p = </span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">R2 = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-
-<span class="c1"># Train and apply a classification-based model</span>
-<span class="n">class_model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
-<span class="n">class_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
-<span class="n">class_y</span> <span class="o">=</span> <span class="n">class_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Classification results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">class_y</span><span class="p">))</span>
-
-<span class="c1"># Apply model to clinical data</span>
-<span class="n">clinical_y</span> <span class="o">=</span> <span class="n">reg_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_clinical</span><span class="p">)</span>
-<span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">spearmanr</span><span class="p">(</span><span class="n">clinical_scores</span><span class="p">,</span> <span class="n">clinical_y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Clinical results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman R = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="o">-</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman p = </span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-</pre></div>
-</div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
@@ -583,198 +443,189 @@ delta-pos-ECK3742-RBSD        0.0
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Regression results:
-        Spearman R = 0.5883
-        Spearman p = 0.000161
-        R2 = 0.1507
+        Spearman R = 0.6575
+        Spearman p = 2e-09
+        R2 = 0.3895
 Classification results:
               precision    recall  f1-score   support
 
-           A       0.67      0.38      0.48        16
+           A       0.50      0.31      0.38        13
+           N       0.68      0.90      0.78        42
+           S       0.50      0.09      0.15        11
+
+    accuracy                           0.65        66
+   macro avg       0.56      0.43      0.44        66
+weighted avg       0.61      0.65      0.59        66
+
+</pre></div></div>
+</div>
+</section>
+<section id="Example:-M.-tuberculosis">
+<h2>Example: <em>M. tuberculosis</em><a class="headerlink" href="#Example:-M.-tuberculosis" title="Permalink to this heading"></a></h2>
+<div class="line-block">
+<div class="line">The following analysis and results were originally reported in the <a class="reference external" href="https://doi.org/10.1128/mbio.02627-19">INDIGO-MTB</a> paper.</div>
+<div class="line">- <strong>Training dataset</strong>: 196 two- to five-way interactions between 40 antibacterials</div>
+<div class="line">- <strong>Testing dataset</strong>: 36 two- to three-way interactions between the 13 antibacterials</div>
+<div class="line">- <strong>Clinical dataset</strong>: clinical outcomes for 57 two- to five-way interactions between 7 antibacterials</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Load sample data
+sample = load_sample(&#39;mtb&#39;)
+
+# Define input arguments
+key             = sample[&#39;key&#39;]
+profiles        = sample[&#39;profiles&#39;]
+feature_names   = sample[&#39;feature_names&#39;]
+train_ixns      = sample[&#39;train&#39;][&#39;interactions&#39;]
+train_scores    = sample[&#39;train&#39;][&#39;scores&#39;]
+test_ixns       = sample[&#39;test&#39;][&#39;interactions&#39;]
+test_scores     = sample[&#39;test&#39;][&#39;scores&#39;]
+clinical_ixns   = sample[&#39;clinical&#39;][&#39;interactions&#39;]
+clinical_scores = sample[&#39;clinical&#39;][&#39;scores&#39;]
+
+# Determine ML features
+train_data      = featurize(train_ixns, profiles, feature_names=feature_names, key=key, silent=True)
+test_data       = featurize(test_ixns, profiles, feature_names=feature_names, key=key, silent=True)
+clinical_data   = featurize(clinical_ixns, profiles, feature_names=feature_names, key=key, silent=True)
+X_train, X_test = train_data[&#39;feature_df&#39;].to_numpy().transpose(), test_data[&#39;feature_df&#39;].to_numpy().transpose()
+X_clinical      = clinical_data[&#39;feature_df&#39;].to_numpy().transpose()
+
+# Determine class labels
+thresh, classes = (0.9, 1.1), (&#39;S&#39;, &#39;N&#39;, &#39;A&#39;)
+train_labels    = classify(train_scores, thresholds=thresh, classes=classes)
+test_labels     = classify(test_scores, thresholds=thresh, classes=classes)
+
+# Train and apply a regression-based model
+reg_model = RandomForestRegressor()
+reg_model.fit(X_train, train_scores)
+reg_y = reg_model.predict(X_test)
+r, p = spearmanr(test_scores, reg_y)
+r2 = r2_score(test_scores, reg_y)
+print(&#39;Regression results:&#39;)
+print(&#39;\tSpearman R = {}&#39;.format(round(r, 4)))
+print(&#39;\tSpearman p = {:.3g}&#39;.format(p))
+print(&#39;\tR2 = {}&#39;.format(round(r2, 4)))
+
+# Train and apply a classification-based model
+class_model = RandomForestClassifier()
+class_model.fit(X_train, train_labels)
+class_y = class_model.predict(X_test)
+print(&#39;Classification results:&#39;)
+print(classification_report(test_labels, class_y))
+
+# Apply model to clinical data
+clinical_y = reg_model.predict(X_clinical)
+r, p = spearmanr(clinical_scores, clinical_y)
+print(&#39;Clinical results:&#39;)
+print(&#39;\tSpearman R = {}&#39;.format(round(-r, 4)))
+print(&#39;\tSpearman p = {:.3g}&#39;.format(p))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Defining INDIGO features: 100%|██████████| 196/196 [00:00&lt;00:00, 512.41it/s]
+Defining INDIGO features: 100%|██████████| 36/36 [00:00&lt;00:00, 538.73it/s]
+Defining INDIGO features: 100%|██████████| 57/57 [00:00&lt;00:00, 552.91it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Regression results:
+        Spearman R = 0.5348
+        Spearman p = 0.000779
+        R2 = 0.122
+Classification results:
+              precision    recall  f1-score   support
+
+           A       0.62      0.31      0.42        16
            N       0.00      0.00      0.00         1
            S       0.73      0.84      0.78        19
 
-    accuracy                           0.61        36
-   macro avg       0.46      0.41      0.42        36
-weighted avg       0.68      0.61      0.63        36
+    accuracy                           0.58        36
+   macro avg       0.45      0.38      0.40        36
+weighted avg       0.66      0.58      0.60        36
 
 Clinical results:
-        Spearman R = 0.5607
-        Spearman p = 5.74e-06
+        Spearman R = 0.5035
+        Spearman p = 6.55e-05
 </pre></div></div>
 </div>
 </section>
 <section id="Example:-S.-aureus">
 <h2>Example: <em>S. aureus</em><a class="headerlink" href="#Example:-S.-aureus" title="Permalink to this heading"></a></h2>
+<div class="line-block">
+<div class="line">The following analysis and results were originally reported in the <a class="reference external" href="https://doi.org/10.1007/978-1-4939-8891-4_13">INDIGO</a> paper.</div>
+<div class="line">- <strong>Training dataset</strong>: 171 two-way interactions between 19 antibiotics measured in <em>E. coli</em></div>
+<div class="line">- <strong>Testing dataset</strong>: 45 two-way interactions between the 10 antibiotics measured in <em>S. aureus</em></div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load sample data</span>
-<span class="n">sample</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="s1">&#39;saureus&#39;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Load sample data
+sample = load_sample(&#39;saureus&#39;)
 
-<span class="c1"># Define input arguments</span>
-<span class="n">key</span>             <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span>
-<span class="n">profiles</span>        <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;profiles&#39;</span><span class="p">]</span>
-<span class="n">feature_names</span>   <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;feature_names&#39;</span><span class="p">]</span>
-<span class="n">train_ixns</span>      <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">train_scores</span>    <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-<span class="n">test_ixns</span>       <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">test_scores</span>     <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-<span class="n">strains</span>         <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">][</span><span class="s1">&#39;strains&#39;</span><span class="p">]</span>
-<span class="n">orthology_map</span>   <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">][</span><span class="s1">&#39;map&#39;</span><span class="p">]</span>
+# Define input arguments
+key             = sample[&#39;key&#39;]
+profiles        = sample[&#39;profiles&#39;]
+feature_names   = sample[&#39;feature_names&#39;]
+train_ixns      = sample[&#39;train&#39;][&#39;interactions&#39;]
+train_scores    = sample[&#39;train&#39;][&#39;scores&#39;]
+test_ixns       = sample[&#39;test&#39;][&#39;interactions&#39;]
+test_scores     = sample[&#39;test&#39;][&#39;scores&#39;]
+strains         = sample[&#39;orthology&#39;][&#39;strains&#39;]
+orthology_map   = sample[&#39;orthology&#39;][&#39;map&#39;]
 
-<span class="c1"># Determine ML features</span>
-<span class="n">train_data</span>      <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">train_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">test_data</span>       <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">test_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">test_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+# Determine ML features
+train_data      = featurize(train_ixns, profiles, feature_names=feature_names, key=key, silent=True)
+test_data       = featurize(test_ixns, profiles, feature_names=feature_names, key=key, silent=True,
+                            strains=strains, orthology_map=orthology_map)
+X_train, X_test = train_data[&#39;feature_df&#39;].to_numpy().transpose(), test_data[&#39;feature_df&#39;].to_numpy().transpose()
 
-<span class="c1"># Determine class labels</span>
-<span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
-<span class="n">train_labels</span>    <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">train_scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
-<span class="n">test_labels</span>     <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
+# Determine class labels
+thresh, classes = (-0.5, 2), (&#39;S&#39;, &#39;N&#39;, &#39;A&#39;)
+train_labels    = classify(train_scores, thresholds=thresh, classes=classes)
+test_labels     = classify(test_scores, thresholds=thresh, classes=classes)
 
-<span class="c1"># Train and apply a regression-based model</span>
-<span class="n">reg_model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
-<span class="n">reg_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_scores</span><span class="p">)</span>
-<span class="n">reg_y</span> <span class="o">=</span> <span class="n">reg_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">spearmanr</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y</span><span class="p">)</span>
-<span class="n">r2</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman R = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman p = </span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">R2 = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
+# Train and apply a regression-based model
+reg_model = RandomForestRegressor()
+reg_model.fit(X_train, train_scores)
+reg_y = reg_model.predict(X_test)
+r, p = spearmanr(test_scores, reg_y)
+r2 = r2_score(test_scores, reg_y)
+print(&#39;Regression results:&#39;)
+print(&#39;\tSpearman R = {}&#39;.format(round(r, 4)))
+print(&#39;\tSpearman p = {:.3g}&#39;.format(p))
+print(&#39;\tR2 = {}&#39;.format(round(r2, 4)))
 
-<span class="c1"># Orthology version</span>
-<span class="n">test_data_ortho</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">test_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
-                            <span class="n">strains</span><span class="o">=</span><span class="n">strains</span><span class="p">,</span> <span class="n">orthology_map</span><span class="o">=</span><span class="n">orthology_map</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_test_ortho</span>    <span class="o">=</span> <span class="n">test_data_ortho</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-<span class="n">reg_y_ortho</span> <span class="o">=</span> <span class="n">reg_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_ortho</span><span class="p">)</span>
-<span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">spearmanr</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y_ortho</span><span class="p">)</span>
-<span class="n">r2</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y_ortho</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression results (with orthology):&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman R = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman p = </span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">R2 = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-
-<span class="c1"># Train and apply a classification-based model</span>
-<span class="n">class_model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
-<span class="n">class_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
-<span class="n">class_y</span> <span class="o">=</span> <span class="n">class_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Classification results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">class_y</span><span class="p">))</span>
+# Train and apply a classification-based model
+class_model = RandomForestClassifier()
+class_model.fit(X_train, train_labels)
+class_y = class_model.predict(X_test)
+print(&#39;Classification results:&#39;)
+print(classification_report(test_labels, class_y))
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area docutils container">
+<div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Regression results:
-        Spearman R = 0.478
-        Spearman p = 0.000898
-        R2 = -0.3188
-Regression results (with orthology):
-        Spearman R = 0.5756
-        Spearman p = 3.52e-05
-        R2 = -1.2016
-Classification results:
-              precision    recall  f1-score   support
-
-           A       0.33      0.50      0.40         2
-           N       0.50      0.77      0.61        22
-           S       0.62      0.24      0.34        21
-
-    accuracy                           0.51        45
-   macro avg       0.49      0.50      0.45        45
-weighted avg       0.55      0.51      0.48        45
-
+Defining INDIGO features: 100%|██████████| 171/171 [00:00&lt;00:00, 508.65it/s]
+Defining INDIGO features: 100%|██████████| 45/45 [00:00&lt;00:00, 569.02it/s]
+Mapping orthologous genes: 100%|██████████| 1/1 [00:01&lt;00:00,  1.99s/it]
 </pre></div></div>
-</div>
-</section>
-<section id="Example:-A.-baumannii">
-<h2>Example: <em>A. baumannii</em><a class="headerlink" href="#Example:-A.-baumannii" title="Permalink to this heading"></a></h2>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load sample data</span>
-<span class="n">sample</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">(</span><span class="s1">&#39;abaumannii&#39;</span><span class="p">)</span>
-
-<span class="c1"># Define input arguments</span>
-<span class="n">key</span>             <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;key&#39;</span><span class="p">]</span>
-<span class="n">profiles</span>        <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;profiles&#39;</span><span class="p">]</span>
-<span class="n">feature_names</span>   <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;feature_names&#39;</span><span class="p">]</span>
-<span class="n">train_ixns</span>      <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">train_scores</span>    <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-<span class="n">test_ixns</span>       <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="s1">&#39;interactions&#39;</span><span class="p">]</span>
-<span class="n">test_scores</span>     <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;test&#39;</span><span class="p">][</span><span class="s1">&#39;scores&#39;</span><span class="p">]</span>
-<span class="n">strains</span>         <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">][</span><span class="s1">&#39;strains&#39;</span><span class="p">]</span>
-<span class="n">orthology_map</span>   <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s1">&#39;orthology&#39;</span><span class="p">][</span><span class="s1">&#39;map&#39;</span><span class="p">]</span>
-
-<span class="c1"># Determine ML features</span>
-<span class="n">train_data</span>      <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">train_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">test_data</span>       <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">test_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">test_data</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-
-<span class="c1"># Determine class labels</span>
-<span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
-<span class="n">train_labels</span>    <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">train_scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
-<span class="n">test_labels</span>     <span class="o">=</span> <span class="n">classify</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">thresholds</span><span class="o">=</span><span class="n">thresh</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">)</span>
-
-<span class="c1"># Train and apply a regression-based model</span>
-<span class="n">reg_model</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">()</span>
-<span class="n">reg_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_scores</span><span class="p">)</span>
-<span class="n">reg_y</span> <span class="o">=</span> <span class="n">reg_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">spearmanr</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y</span><span class="p">)</span>
-<span class="n">r2</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman R = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman p = </span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">R2 = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-
-<span class="c1"># Orthology version</span>
-<span class="n">test_data_ortho</span> <span class="o">=</span> <span class="n">featurize</span><span class="p">(</span><span class="n">test_ixns</span><span class="p">,</span> <span class="n">profiles</span><span class="p">,</span> <span class="n">feature_names</span><span class="o">=</span><span class="n">feature_names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
-                            <span class="n">strains</span><span class="o">=</span><span class="n">strains</span><span class="p">,</span> <span class="n">orthology_map</span><span class="o">=</span><span class="n">orthology_map</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">X_test_ortho</span>    <span class="o">=</span> <span class="n">test_data_ortho</span><span class="p">[</span><span class="s1">&#39;feature_df&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
-<span class="n">reg_y_ortho</span> <span class="o">=</span> <span class="n">reg_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test_ortho</span><span class="p">)</span>
-<span class="n">r</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">spearmanr</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y_ortho</span><span class="p">)</span>
-<span class="n">r2</span> <span class="o">=</span> <span class="n">r2_score</span><span class="p">(</span><span class="n">test_scores</span><span class="p">,</span> <span class="n">reg_y_ortho</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Regression results (with orthology):&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman R = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Spearman p = </span><span class="si">{:.3g}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">R2 = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)))</span>
-
-<span class="c1"># Train and apply a classification-based model</span>
-<span class="n">class_model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
-<span class="n">class_model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
-<span class="n">class_y</span> <span class="o">=</span> <span class="n">class_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Classification results:&#39;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">test_labels</span><span class="p">,</span> <span class="n">class_y</span><span class="p">))</span>
-
-<span class="c1"># Visualize results</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">test_labels</span><span class="p">,</span>
-    <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">reg_y_ortho</span>
-<span class="p">}</span>
-<span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">go</span><span class="o">.</span><span class="n">Figure</span><span class="p">()</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">x</span><span class="o">==</span><span class="s1">&#39;A&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Antagonism&#39;</span><span class="p">,</span> <span class="n">marker_color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">))</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">x</span><span class="o">==</span><span class="s1">&#39;N&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Neutral&#39;</span><span class="p">,</span> <span class="n">marker_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">))</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">add_trace</span><span class="p">(</span><span class="n">go</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">x</span><span class="o">==</span><span class="s1">&#39;S&#39;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Synergy&#39;</span><span class="p">,</span> <span class="n">marker_color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">))</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span>
-    <span class="n">autosize</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
-    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;A. baumannii&#39;</span><span class="p">,</span>
-    <span class="n">xaxis_title</span><span class="o">=</span><span class="s1">&#39;True Class&#39;</span><span class="p">,</span>
-    <span class="n">yaxis_title</span><span class="o">=</span><span class="s1">&#39;Predicted Score&#39;</span><span class="p">,</span>
-    <span class="n">showlegend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">plot_bgcolor</span><span class="o">=</span><span class="s1">&#39;rgba(0,0,0,0)&#39;</span>
-<span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
@@ -782,23 +633,125 @@ weighted avg       0.55      0.51      0.48        45
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Regression results:
-        Spearman R = 0.6469
-        Spearman p = 1.58e-06
-        R2 = -0.6263
-Regression results (with orthology):
-        Spearman R = 0.5968
-        Spearman p = 1.51e-05
-        R2 = -0.3828
+        Spearman R = 0.5428
+        Spearman p = 0.000117
+        R2 = -1.257
 Classification results:
               precision    recall  f1-score   support
 
-           A       0.47      0.82      0.60        17
-           N       0.17      0.09      0.12        11
-           S       0.78      0.41      0.54        17
+           A       0.00      0.00      0.00         2
+           N       0.49      1.00      0.66        22
+           S       0.00      0.00      0.00        21
 
     accuracy                           0.49        45
-   macro avg       0.47      0.44      0.42        45
-weighted avg       0.51      0.49      0.46        45
+   macro avg       0.16      0.33      0.22        45
+weighted avg       0.24      0.49      0.32        45
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+c:\Users\carol\AppData\Local\Programs\PythonCodingPack\lib\site-packages\sklearn\metrics\_classification.py:1221: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+</pre></div></div>
+</div>
+</section>
+<section id="Example:-A.-baumannii">
+<h2>Example: <em>A. baumannii</em><a class="headerlink" href="#Example:-A.-baumannii" title="Permalink to this heading"></a></h2>
+<div class="line-block">
+<div class="line">The following analysis and results were originally reported in the <a class="reference external" href="https://doi.org/10.1371/journal.pcbi.1006677">MAGENTA</a> paper.</div>
+<div class="line">- <strong>Training dataset</strong>: 338 two- to three-way interactions between 24 antibiotics measured in <em>E. coli</em> cultured in various media conditions</div>
+<div class="line">- <strong>Testing dataset</strong>: 45 two-way interactions between the 8 antibiotics measured in <em>A. baumannii</em></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Load sample data
+sample = load_sample(&#39;abaumannii&#39;)
+
+# Define input arguments
+key             = sample[&#39;key&#39;]
+profiles        = sample[&#39;profiles&#39;]
+feature_names   = sample[&#39;feature_names&#39;]
+train_ixns      = sample[&#39;train&#39;][&#39;interactions&#39;]
+train_scores    = sample[&#39;train&#39;][&#39;scores&#39;]
+test_ixns       = sample[&#39;test&#39;][&#39;interactions&#39;]
+test_scores     = sample[&#39;test&#39;][&#39;scores&#39;]
+strains         = sample[&#39;orthology&#39;][&#39;strains&#39;]
+orthology_map   = sample[&#39;orthology&#39;][&#39;map&#39;]
+
+# Determine ML features
+train_data      = featurize(train_ixns, profiles, feature_names=feature_names, key=key, silent=True)
+test_data       = featurize(test_ixns, profiles, feature_names=feature_names, key=key, silent=True,
+                            strains=strains, orthology_map=orthology_map)
+X_train, X_test = train_data[&#39;feature_df&#39;].to_numpy().transpose(), test_data[&#39;feature_df&#39;].to_numpy().transpose()
+
+# Determine class labels
+thresh, classes = (-0.5, 0), (&#39;S&#39;, &#39;N&#39;, &#39;A&#39;)
+train_labels    = classify(train_scores, thresholds=thresh, classes=classes)
+test_labels     = classify(test_scores, thresholds=thresh, classes=classes)
+
+# Train and apply a regression-based model
+reg_model = RandomForestRegressor()
+reg_model.fit(X_train, train_scores)
+reg_y = reg_model.predict(X_test)
+r, p = spearmanr(test_scores, reg_y)
+r2 = r2_score(test_scores, reg_y)
+print(&#39;Regression results:&#39;)
+print(&#39;\tSpearman R = {}&#39;.format(round(r, 4)))
+print(&#39;\tSpearman p = {:.3g}&#39;.format(p))
+print(&#39;\tR2 = {}&#39;.format(round(r2, 4)))
+
+# Train and apply a classification-based model
+class_model = RandomForestClassifier()
+class_model.fit(X_train, train_labels)
+class_y = class_model.predict(X_test)
+print(&#39;Classification results:&#39;)
+print(classification_report(test_labels, class_y))
+
+# Visualize results
+df = pd.DataFrame({&#39;x&#39;: test_labels, &#39;y&#39;: reg_y})
+df.replace({&#39;A&#39;: &#39;Antagonism&#39;, &#39;N&#39;: &#39;Neutral&#39;, &#39;S&#39;: &#39;Synergy&#39;}, inplace=True)
+sns.set(rc={&#39;figure.figsize&#39;:(3, 4)})
+ax = sns.boxplot(x=&#39;x&#39;, y=&#39;y&#39;, data=df, order=[&#39;Antagonism&#39;, &#39;Neutral&#39;, &#39;Synergy&#39;], )
+ax.set(title=&#39;A. baumannii&#39;, xlabel=&#39;True class&#39;, ylabel=&#39;Predicted score&#39;)
+plt.show()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Defining INDIGO features: 100%|██████████| 338/338 [00:00&lt;00:00, 497.36it/s]
+Defining INDIGO features: 100%|██████████| 45/45 [00:00&lt;00:00, 589.56it/s]
+Mapping orthologous genes: 100%|██████████| 1/1 [00:02&lt;00:00,  2.58s/it]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Regression results:
+        Spearman R = 0.614
+        Spearman p = 7.28e-06
+        R2 = -0.3302
+Classification results:
+              precision    recall  f1-score   support
+
+           A       0.43      0.94      0.59        17
+           N       0.00      0.00      0.00        11
+           S       0.86      0.35      0.50        17
+
+    accuracy                           0.49        45
+   macro avg       0.43      0.43      0.36        45
+weighted avg       0.49      0.49      0.41        45
 
 </pre></div></div>
 </div>
@@ -806,9 +759,7 @@ weighted avg       0.51      0.49      0.46        45
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<div class="admonition warning">
-<p>Data type cannot be displayed: application/vnd.plotly.v1+json</p>
-</div>
+<img alt="../_images/notebooks_indigopy_demo_9_2.png" src="../_images/notebooks_indigopy_demo_9_2.png" />
 </div>
 </div>
 </section>
@@ -825,7 +776,7 @@ weighted avg       0.51      0.49      0.46        45
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, sriram-lab.</p>
+    <p>&#169; Copyright 2022, Chandrasekaran Lab, University of Michigan.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -22,6 +22,9 @@ class TestLoadSample:
         assert all(key in sample['train'].keys() for key in ['interactions', 'scores'])
         assert all(key in sample['test'].keys() for key in ['interactions', 'scores'])
         assert sample['train']['interactions'][0] == ['AMK', 'CEF']
+        out = featurize(sample['test']['interactions'], sample['profiles'], silent=True, 
+                        feature_names=sample['feature_names'], key=sample['key'])
+        assert all(key in out.keys() for key in ['interaction_list', 'drug_profiles', 'feature_df', 'idx'])
 
     def test_load_sample_mtb(self): 
         """Make sure that `load_sample` works for M. tuberculosis data."""
@@ -31,6 +34,9 @@ class TestLoadSample:
         assert all(key in sample['test'].keys() for key in ['interactions', 'scores'])
         assert all(key in sample['clinical'].keys() for key in ['interactions', 'scores'])
         assert sample['clinical']['interactions'][0] == ['EMBx', 'INH']
+        out = featurize(sample['test']['interactions'], sample['profiles'], silent=True, 
+                        feature_names=sample['feature_names'], key=sample['key'])
+        assert all(key in out.keys() for key in ['interaction_list', 'drug_profiles', 'feature_df', 'idx'])
 
     def test_load_sample_saureus(self): 
         """Make sure that `load_sample` works for S. aureus data."""
@@ -40,6 +46,10 @@ class TestLoadSample:
         assert all(key in sample['test'].keys() for key in ['interactions', 'scores'])
         assert all(key in sample['orthology'].keys() for key in ['strains', 'map'])
         assert sample['orthology']['map']['S_aureus'][0:3] == ['b0002', 'b0003', 'b0007']
+        out = featurize(sample['test']['interactions'], sample['profiles'], 
+                        feature_names=sample['feature_names'], key=sample['key'], silent=True, 
+                        strains=sample['orthology']['strains'], orthology_map=sample['orthology']['map'])
+        assert all(key in out.keys() for key in ['interaction_list', 'drug_profiles', 'feature_df', 'idx'])
 
     def test_load_sample_abaumannii(self): 
         """Make sure that `load_sample` works for A. baumannii data."""
@@ -49,6 +59,10 @@ class TestLoadSample:
         assert all(key in sample['test'].keys() for key in ['interactions', 'scores'])
         assert all(key in sample['orthology'].keys() for key in ['strains', 'map'])
         assert sample['orthology']['map']['A_baumannii'][0:3] == ['b0002', 'b0006', 'b0007']
+        out = featurize(sample['test']['interactions'], sample['profiles'], silent=True, 
+                        feature_names=sample['feature_names'], key=sample['key'], 
+                        strains=sample['orthology']['strains'], orthology_map=sample['orthology']['map'])
+        assert all(key in out.keys() for key in ['interaction_list', 'drug_profiles', 'feature_df', 'idx'])
 
 
 class TestFeaturize: 
