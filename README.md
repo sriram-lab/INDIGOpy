@@ -22,8 +22,7 @@ INDIGOpy
 └───docs      [documentation and example usage]
 └───indigopy  [source code]
 └───tests     [testing modules]
-|   .gitignore
-|   .readthedocs.yaml
+|   INDIGOpy_logo.png
 |   LICENSE
 |   README.md
 |   pyproject.toml
