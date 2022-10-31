@@ -2,7 +2,6 @@
 *.gdoc
 
 # .py* files
-*.py*
 *.pyc
 
 # ipynb_checkpoints
