@@ -12,4 +12,4 @@
 .DS_Store
 
 # Other directories
-
+dist/*
