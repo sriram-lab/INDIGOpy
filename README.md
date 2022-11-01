@@ -10,7 +10,7 @@ Implementation of INDIGO (INferring Drug Interactions using chemoGenomics and Or
 Using pip:  
 
 ```
-pip install -i https://test.pypi.org/simple/ indigopy
+pip install indigopy-sriram-lab
 ```
 
 # User Guide

@@ -89,7 +89,7 @@ def load_sample(dataset:str):
         raise ValueError("Provide one of the following options: ('ecoli', 'mtb', 'saureus', 'abaumannii').")
     # Load queried dataset
     path = os.path.dirname(os.path.abspath(__file__))
-    file = os.path.join(path, 'data', 'sample_data.pkl')
+    file = os.path.join(path, 'sample_data.pkl')
     with open(file, 'rb') as f: 
         ecoli_data, mtb_data, saureus_data, abaumannii_data = pickle.load(f)
         if dataset == 'ecoli': 
