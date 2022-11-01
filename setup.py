@@ -28,7 +28,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name="indigopy",  # Required
+    name="indigopy-sriram-lab",  # Required
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
     #
@@ -104,7 +104,7 @@ setup(
     keywords="INDIGO, machine learning, combination therapy",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
-    package_dir={"": "indigopy"},  # Optional
+    # package_dir={"": "indigopy"},  # Optional
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
     #
@@ -114,7 +114,7 @@ setup(
     #
     #   py_modules=["my_module"],
     #
-    packages=find_packages(where="indigopy"),  # Required
+    packages=find_packages(include=['indigopy', 'indigopy.*']),  # Required
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. See
@@ -126,7 +126,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/discussions/install-requires-vs-requirements/
-    install_requires=["sphinx, sphinx-rtd-theme, nbsphinx, numpy, pandas, tqdm"],  # Optional
+    install_requires=["numpy", "pandas", "tqdm"],  # Optional
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
     # syntax, for example:
