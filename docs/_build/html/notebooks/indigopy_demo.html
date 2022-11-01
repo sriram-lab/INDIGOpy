@@ -364,7 +364,7 @@ div.rendered_html tbody tr:hover {
 <section id="Set-up-environment">
 <h2>Set up environment<a class="headerlink" href="#Set-up-environment" title="Permalink to this heading"></a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import dependencies</span>
@@ -376,8 +376,6 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># Import package functions</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;c:/Users/carol/github/INDIGOpy/&#39;</span><span class="p">)</span> <span class="c1"># modify if testing locally in different machine; remove once package is published</span>
 <span class="kn">from</span> <span class="nn">indigopy.core</span> <span class="kn">import</span> <span class="n">load_sample</span><span class="p">,</span> <span class="n">featurize</span><span class="p">,</span> <span class="n">classify</span>
 </pre></div>
 </div>
@@ -441,30 +439,43 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Defining INDIGO features: 100%|██████████| 105/105 [00:00&lt;00:00, 406.95it/s]
-Defining INDIGO features: 100%|██████████| 66/66 [00:00&lt;00:00, 464.53it/s]
+Defining INDIGO features: 100%|██████████| 105/105 [00:00&lt;00:00, 147.47it/s]
+Defining INDIGO features: 100%|██████████| 66/66 [00:00&lt;00:00, 209.53it/s]
 </pre></div></div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Regression results:
-        Spearman R = 0.6575
-        Spearman p = 2e-09
-        R2 = 0.3895
+        Spearman R = 0.5832
+        Spearman p = 2.76e-07
+        R2 = 0.3711
 Classification results:
               precision    recall  f1-score   support
 
            A       0.50      0.31      0.38        13
-           N       0.68      0.90      0.78        42
-           S       0.50      0.09      0.15        11
+           N       0.67      0.93      0.78        42
+           S       0.00      0.00      0.00        11
 
     accuracy                           0.65        66
-   macro avg       0.56      0.43      0.44        66
-weighted avg       0.61      0.65      0.59        66
+   macro avg       0.39      0.41      0.39        66
+weighted avg       0.53      0.65      0.57        66
 
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
 </pre></div></div>
 </div>
 </section>
@@ -538,9 +549,9 @@ weighted avg       0.61      0.65      0.59        66
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Defining INDIGO features: 100%|██████████| 196/196 [00:00&lt;00:00, 512.41it/s]
-Defining INDIGO features: 100%|██████████| 36/36 [00:00&lt;00:00, 538.73it/s]
-Defining INDIGO features: 100%|██████████| 57/57 [00:00&lt;00:00, 552.91it/s]
+Defining INDIGO features: 100%|██████████| 196/196 [00:00&lt;00:00, 230.32it/s]
+Defining INDIGO features: 100%|██████████| 36/36 [00:00&lt;00:00, 235.30it/s]
+Defining INDIGO features: 100%|██████████| 57/57 [00:00&lt;00:00, 248.92it/s]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -549,23 +560,23 @@ Defining INDIGO features: 100%|██████████| 57/57 [00:00&lt;0
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Regression results:
-        Spearman R = 0.5348
-        Spearman p = 0.000779
-        R2 = 0.122
+        Spearman R = 0.5453
+        Spearman p = 0.000583
+        R2 = 0.1152
 Classification results:
               precision    recall  f1-score   support
 
            A       0.62      0.31      0.42        16
            N       0.00      0.00      0.00         1
-           S       0.73      0.84      0.78        19
+           S       0.68      0.79      0.73        19
 
-    accuracy                           0.58        36
-   macro avg       0.45      0.38      0.40        36
-weighted avg       0.66      0.58      0.60        36
+    accuracy                           0.56        36
+   macro avg       0.44      0.37      0.38        36
+weighted avg       0.64      0.56      0.57        36
 
 Clinical results:
-        Spearman R = 0.5035
-        Spearman p = 6.55e-05
+        Spearman R = 0.562
+        Spearman p = 5.39e-06
 </pre></div></div>
 </div>
 </section>
@@ -630,9 +641,9 @@ Clinical results:
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Defining INDIGO features: 100%|██████████| 171/171 [00:00&lt;00:00, 508.65it/s]
-Defining INDIGO features: 100%|██████████| 45/45 [00:00&lt;00:00, 569.02it/s]
-Mapping orthologous genes: 100%|██████████| 1/1 [00:01&lt;00:00,  1.99s/it]
+Defining INDIGO features: 100%|██████████| 171/171 [00:00&lt;00:00, 250.37it/s]
+Defining INDIGO features: 100%|██████████| 45/45 [00:00&lt;00:00, 244.55it/s]
+Mapping orthologous genes: 100%|██████████| 1/1 [00:04&lt;00:00,  4.40s/it]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -641,9 +652,9 @@ Mapping orthologous genes: 100%|██████████| 1/1 [00:01&lt;00
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Regression results:
-        Spearman R = 0.5428
-        Spearman p = 0.000117
-        R2 = -1.257
+        Spearman R = 0.6202
+        Spearman p = 5.53e-06
+        R2 = -1.17
 Classification results:
               precision    recall  f1-score   support
 
@@ -662,7 +673,11 @@ weighted avg       0.24      0.49      0.32        45
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-c:\Users\carol\AppData\Local\Programs\PythonCodingPack\lib\site-packages\sklearn\metrics\_classification.py:1221: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
   _warn_prf(average, modifier, msg_start, len(result))
 </pre></div></div>
 </div>
@@ -736,9 +751,9 @@ c:\Users\carol\AppData\Local\Programs\PythonCodingPack\lib\site-packages\sklearn
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Defining INDIGO features: 100%|██████████| 338/338 [00:00&lt;00:00, 497.36it/s]
-Defining INDIGO features: 100%|██████████| 45/45 [00:00&lt;00:00, 589.56it/s]
-Mapping orthologous genes: 100%|██████████| 1/1 [00:02&lt;00:00,  2.58s/it]
+Defining INDIGO features: 100%|██████████| 338/338 [00:01&lt;00:00, 247.62it/s]
+Defining INDIGO features: 100%|██████████| 45/45 [00:00&lt;00:00, 249.99it/s]
+Mapping orthologous genes: 100%|██████████| 1/1 [00:06&lt;00:00,  6.00s/it]
 </pre></div></div>
 </div>
 <div class="nboutput docutils container">
@@ -747,27 +762,40 @@ Mapping orthologous genes: 100%|██████████| 1/1 [00:02&lt;00
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Regression results:
-        Spearman R = 0.614
-        Spearman p = 7.28e-06
-        R2 = -0.3302
+        Spearman R = 0.6061
+        Spearman p = 1.02e-05
+        R2 = -0.5064
 Classification results:
               precision    recall  f1-score   support
 
-           A       0.43      0.94      0.59        17
+           A       0.39      1.00      0.56        17
            N       0.00      0.00      0.00        11
-           S       0.86      0.35      0.50        17
+           S       1.00      0.06      0.11        17
 
-    accuracy                           0.49        45
-   macro avg       0.43      0.43      0.36        45
-weighted avg       0.49      0.49      0.41        45
+    accuracy                           0.40        45
+   macro avg       0.46      0.35      0.22        45
+weighted avg       0.52      0.40      0.25        45
 
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
+c:\Users\User\AppData\Local\Programs\Python\Python310\lib\site-packages\sklearn\metrics\_classification.py:1334: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples. Use `zero_division` parameter to control this behavior.
+  _warn_prf(average, modifier, msg_start, len(result))
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_indigopy_demo_9_2.png" src="../_images/notebooks_indigopy_demo_9_2.png" />
+<img alt="../_images/notebooks_indigopy_demo_9_3.png" src="../_images/notebooks_indigopy_demo_9_3.png" />
 </div>
 </div>
 </section>
