@@ -35,7 +35,7 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/guides/single-sourcing-package-version/
-    version="0.1.0",  # Required
+    version="0.1.4",  # Required
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
@@ -115,6 +115,7 @@ setup(
     #   py_modules=["my_module"],
     #
     packages=find_packages(include=['indigopy', 'indigopy.*']),  # Required
+    # include_package_data=True, 
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. See
@@ -141,9 +142,9 @@ setup(
     # },
     # If there are data files included in your packages that need to be
     # installed, specify them here.
-    # package_data={  # Optional
-    #     "sample": ["package_data.dat"],
-    # },
+    package_data={  # Optional
+        "data": ["data/*"],
+    },
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
     # http://docs.python.org/distutils/setupscript.html#installing-additional-files
