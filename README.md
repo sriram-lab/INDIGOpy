@@ -1,4 +1,4 @@
-![alt text](https://github.com/sriram-lab/INDIGOpy/blob/main/INDIGOpy_logo.png?raw=true)
+![alt text](https://github.com/sriram-lab/INDIGOpy/blob/main/docs/INDIGOpy_logo.png?raw=true)
 
 # INDIGOpy
 Implementation of INDIGO (INferring Drug Interactions using chemoGenomics and Orthology) as a Python package.
