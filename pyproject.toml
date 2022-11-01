@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "indigopy-sriram-lab"
-version = "0.1.4"
+version = "0.1.5"
 authors = [
   { name="Chandrasekaran Lab", email="csriram@umich.edu" },
 ]
