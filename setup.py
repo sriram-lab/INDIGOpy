@@ -23,7 +23,7 @@ setup(
     # 
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
-    version="0.1.6",  # Required
+    version="0.1.7",  # Required
     # 
     # This is a one-line description or tagline of what your project does.
     description="The Python implementation of INDIGO",  # Optional
@@ -55,7 +55,7 @@ setup(
     keywords="INDIGO, machine learning, combination therapy",  # Optional
     # 
     # This determines how to find package directories.
-    packages=find_packages(include=['indigopy', 'indigopy.*']),  # Required
+    packages=find_packages(),  # Required
     #  
     # 
     # Specify which Python versions you support.
