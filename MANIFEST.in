@@ -1,3 +1,1 @@
-graft indigopy
-global-exclude __pycache__
-global-exclude *.py[cod]
+include indigopy/sample_data.pkl
