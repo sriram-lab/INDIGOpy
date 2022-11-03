@@ -23,7 +23,7 @@ setup(
     # 
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
-    version="0.1.8",  # Required
+    version="0.1.9",  # Required
     # 
     # This is a one-line description or tagline of what your project does.
     description="The Python implementation of INDIGO",  # Optional
@@ -64,12 +64,10 @@ setup(
     # This field lists other packages that your project depends on to run.
     install_requires=["numpy", "pandas", "tqdm"],  # Optional
     # 
-    # If there are data files included in your packages that need to be
-    # installed, specify them here.
-    include_package_data=True,
-    # package_data={  # Optional
-    #     "": ["sample_data.pkl"],
-    # },
+    # Data files to be included in your packages.
+    package_data={  # Optional
+        "": ["*.pkl", "*.png", "*.xlsx"],
+    },
     # 
     # List additional URLs that are relevant to your project as a dict.
     project_urls={  # Optional
