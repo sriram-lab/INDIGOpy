@@ -22,10 +22,11 @@ INDIGOpy
 └───docs      [documentation and example usage]
 └───indigopy  [source code]
 └───tests     [testing modules]
-|   INDIGOpy_logo.png
 |   LICENSE
+|   MANIFEST.in
 |   README.md
 |   pyproject.toml
+|   setup.py
 ```
 
 # License
