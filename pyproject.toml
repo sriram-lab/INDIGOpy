@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "indigopy-sriram-lab"
-version = "0.1.9"
+version = "0.1.10"
 authors = [
   { name="Chandrasekaran Lab", email="csriram@umich.edu" },
 ]

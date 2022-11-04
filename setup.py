@@ -23,7 +23,7 @@ setup(
     # 
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
-    version="0.1.9",  # Required
+    version="0.1.10",  # Required
     # 
     # This is a one-line description or tagline of what your project does.
     description="The Python implementation of INDIGO",  # Optional
@@ -57,6 +57,8 @@ setup(
     # This determines how to find package directories.
     packages=find_packages(),  # Required
     #  
+    # Incude package data.
+    include_package_data=True, 
     # 
     # Specify which Python versions you support.
     python_requires=">=3.8, <4",
