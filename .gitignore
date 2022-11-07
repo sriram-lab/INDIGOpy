@@ -1,11 +1,17 @@
 # gdocs
 *.gdoc
 
+# .py* files
+*.pyc
+
 # ipynb_checkpoints
-.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# egg-info
+*.egg-info*
 
 # DS STORE
 .DS_Store
 
 # Other directories
-
+dist/*
