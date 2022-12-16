@@ -8,6 +8,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from scipy import sparse
 from warnings import warn
 from itertools import compress
 
@@ -425,7 +426,9 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
         feature_list = feature_list + ['entropy-mean', 'entropy-sum']
     if time: 
         feature_list.append('time')
-    feature_dict = {}
+    # feature_dict = {}
+    X = np.empty([len(feature_list), len(ixn_list)], dtype=float)
+    col_names = []
     for i, ixn in enumerate(tqdm(ixn_list, desc='Defining INDIGO features')): 
         sigma = bin_df[ixn].sum(axis=1) * (2 / len(ixn))
         if time is False or (time is True and time_values is None): 
@@ -443,14 +446,19 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
             feat_data = feat_data + [np.log(df[ixn].var()).mean(), np.log(df[ixn].var()).sum()]
         if time: 
             feat_data = feat_data + [sum(time_values[i][:-1])]
-        feature_dict_keys = [key.split(' - dup')[0] for key in list(feature_dict.keys())]
-        n_key = feature_dict_keys.count(delim.join(ixn))
+        # feature_dict_keys = [key.split(' - dup')[0] for key in list(feature_dict.keys())]
+        # n_key = feature_dict_keys.count(delim.join(ixn))
+        col_names_dup = [col.split(' - dup')[0] for col in col_names]
+        n_key = col_names_dup.count(delim.join(ixn))
         if n_key >= 1: 
-            feature_dict[delim.join(ixn) + ' - dup' + str(n_key)] = feat_data
+            # feature_dict[delim.join(ixn) + ' - dup' + str(n_key)] = feat_data
+            col_names.append(delim.join(ixn) + ' - dup' + str(n_key))
         else: 
-            feature_dict[delim.join(ixn)] = feat_data
-    feature_df = pd.DataFrame.from_dict(feature_dict)
-    feature_df.index = feature_list
+            # feature_dict[delim.join(ixn)] = feat_data
+            col_names.append(delim.join(ixn))
+        X[:, i] = feat_data
+    # feature_df = pd.DataFrame.from_dict(feature_dict)
+    # feature_df.index = feature_list
 
     # Apply orthology mapping (if strains is not None)
     if strains is not None: 
@@ -458,9 +466,19 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
         strain_set = set(strains)
         for strain in tqdm(strain_set, desc='Mapping orthologous genes'): 
             orthologs = orthology_map[strain]
-            row_mask = [feature for feature in list(feature_df.index) if (feature.startswith('sigma')) & (not any([gene == feature[10:] for gene in orthologs]))]
+            # row_mask = [feature for feature in list(feature_df.index) if (feature.startswith('sigma')) & (not any([gene == feature[10:] for gene in orthologs]))]
+            row_mask = [((feature.startswith('sigma')) & (not any([gene == feature[10:] for gene in orthologs]))) for feature in feature_list]
             col_mask = [s == strain for s in strains]
-            feature_df.loc[row_mask, col_mask] = 0
+            mask = np.zeros([len(row_mask), len(col_mask)], dtype=bool)
+            mask[:, np.array(col_mask)] = np.tile(np.reshape(np.array(row_mask), (len(row_mask), 1)), (1, col_mask.count(True)))
+            # feature_df.loc[row_mask, col_mask] = 0
+            X[mask] = 0.0
+    
+    # Convert X into a sparse matrix
+    # X = sparse.csr_matrix(X)
+
+    # Define outputs
+    feature_df = pd.DataFrame(X, index=feature_list, columns=col_names)
 
     return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'idx': keep_ixns}
 
