@@ -427,9 +427,12 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
     if time: 
         feature_list.append('time')
     # feature_dict = {}
-    X = np.empty([len(feature_list), len(ixn_list)], dtype=float)
+    # X = np.empty([len(feature_list), len(ixn_list)], dtype=float)
+    X = np.empty([len(feature_list), len(interactions)], dtype=float)
     col_names = []
-    for i, ixn in enumerate(tqdm(ixn_list, desc='Defining INDIGO features')): 
+    for i, ixn in enumerate(tqdm(interactions, desc='Defining INDIGO features')): 
+        if ixn not in ixn_list: 
+            continue
         sigma = bin_df[ixn].sum(axis=1) * (2 / len(ixn))
         if time is False or (time is True and time_values is None): 
             delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
