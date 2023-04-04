@@ -432,23 +432,25 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
     col_names = []
     for i, ixn in enumerate(tqdm(interactions, desc='Defining INDIGO features')): 
         if ixn not in ixn_list: 
-            continue
-        sigma = bin_df[ixn].sum(axis=1) * (2 / len(ixn))
-        if time is False or (time is True and time_values is None): 
-            delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
-            delim = ' + '
-        elif time is True and time_values is not None: 
-            if all(t == 0 for t in time_values[i]): 
+            pass
+        else: 
+            sigma = bin_df[ixn].sum(axis=1) * (2 / len(ixn))
+            if time is False or (time is True and time_values is None): 
                 delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
                 delim = ' + '
-            else: 
-                delta = pd.Series(np.diff((bin_df[ixn] * time_values[i]).values, n=len(ixn)-1).flatten() / sum(time_values[i]))
-                delim = ' -> '
-        feat_data = sigma.tolist() + delta.tolist()
-        if entropy: 
-            feat_data = feat_data + [np.log(df[ixn].var()).mean(), np.log(df[ixn].var()).sum()]
-        if time: 
-            feat_data = feat_data + [sum(time_values[i][:-1])]
+            elif time is True and time_values is not None: 
+                if all(t == 0 for t in time_values[i]): 
+                    delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
+                    delim = ' + '
+                else: 
+                    delta = pd.Series(np.diff((bin_df[ixn] * time_values[i]).values, n=len(ixn)-1).flatten() / sum(time_values[i]))
+                    delim = ' -> '
+            feat_data = sigma.tolist() + delta.tolist()
+            if entropy: 
+                feat_data = feat_data + [np.log(df[ixn].var()).mean(), np.log(df[ixn].var()).sum()]
+            if time: 
+                feat_data = feat_data + [sum(time_values[i][:-1])]
+            X[:, i] = feat_data
         # feature_dict_keys = [key.split(' - dup')[0] for key in list(feature_dict.keys())]
         # n_key = feature_dict_keys.count(delim.join(ixn))
         col_names_dup = [col.split(' - dup')[0] for col in col_names]
@@ -459,13 +461,12 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
         else: 
             # feature_dict[delim.join(ixn)] = feat_data
             col_names.append(delim.join(ixn))
-        X[:, i] = feat_data
     # feature_df = pd.DataFrame.from_dict(feature_dict)
     # feature_df.index = feature_list
 
     # Apply orthology mapping (if strains is not None)
     if strains is not None: 
-        strains = list(compress(strains, keep_ixns))
+        # strains = list(compress(strains, keep_ixns))
         strain_set = set(strains)
         for strain in tqdm(strain_set, desc='Mapping orthologous genes'): 
             orthologs = orthology_map[strain]
