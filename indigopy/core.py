@@ -346,6 +346,10 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
             raise TypeError('Provide a list of strings for feature_names')
         if len(feature_names) != n: 
             raise AssertionError('Provide {} elements for feature_names'.format(n))
+        if len(set(feature_names)) < n: 
+            if silent is False: 
+                warn('Not all feature names are unique. Imposing unique entries')
+            feature_names = [v + '_rep' + str(feature_names[:i].count(v) + 1) if feature_names.count(v) > 1 else v for i, v in enumerate(feature_names)]
     else: 
         feature_names = ['feat{}'.format(i) for i in range(1, n+1)]
     if key is not None: 
