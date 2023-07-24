@@ -438,20 +438,27 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
     X = np.empty([len(feature_list), len(interactions)], dtype=float)
     col_names = []
     for i, ixn in enumerate(tqdm(interactions, desc='Defining INDIGO features')): 
+        if time is False or (time is True and time_values is None): 
+            delim = ' + '
+        elif time is True and time_values is not None: 
+            if all(t == 0 for t in time_values[i]): 
+                delim = ' + '
+            else: 
+                delim = ' -> '
         if ixn not in ixn_list: 
             pass
         else: 
             sigma = bin_df[ixn].sum(axis=1) * (2 / len(ixn))
             if time is False or (time is True and time_values is None): 
                 delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
-                delim = ' + '
+                # delim = ' + '
             elif time is True and time_values is not None: 
                 if all(t == 0 for t in time_values[i]): 
                     delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
-                    delim = ' + '
+                    # delim = ' + '
                 else: 
                     delta = pd.Series(np.diff((bin_df[ixn] * time_values[i]).values, n=len(ixn)-1).flatten() / sum(time_values[i]))
-                    delim = ' -> '
+                    # delim = ' -> '
             feat_data = sigma.tolist() + delta.tolist()
             if entropy: 
                 feat_data = feat_data + [np.log(df[ixn].var()).mean(), np.log(df[ixn].var()).sum()]
