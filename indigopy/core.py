@@ -8,6 +8,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from scipy import sparse
 from warnings import warn
 from itertools import compress
 
@@ -345,6 +346,9 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
             raise TypeError('Provide a list of strings for feature_names')
         if len(feature_names) != n: 
             raise AssertionError('Provide {} elements for feature_names'.format(n))
+        if len(set(feature_names)) < n: 
+            if silent is False: 
+                warn('Not all feature names are unique. Enforcing unique entries for output')
     else: 
         feature_names = ['feat{}'.format(i) for i in range(1, n+1)]
     if key is not None: 
@@ -382,7 +386,9 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
             raise ValueError('orthology_map is None while strains is not None. Provide a dict for orthology_map')
         else: 
             if (type(orthology_map) is not dict or not all([strain in orthology_map.keys() for strain in strains])): 
-                    raise TypeError('Provide a dict with valid key entries for orthology_map')
+                raise TypeError('Provide a dict with valid key entries for orthology_map')
+            if (type(orthology_map) is not dict or not any([any(feature in v for feature in feature_names) for v in orthology_map.values()])): 
+                raise ValueError('Orthology map entries do not match feature names')
 
     # Modify profile names (if key is provided)
     df = pd.DataFrame.from_dict(profiles)
@@ -412,8 +418,10 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
     if binarize: 
         bin_df = pd.concat([df < thresholds[0], df > thresholds[1]], ignore_index=True)
         feature_names = ['neg-' + feature for feature in feature_names] + ['pos-' + feature for feature in feature_names]
+        gx = 10
     else: 
         bin_df = df
+        gx = 6
     if remove_zero_rows: 
         zero_index = (bin_df==0).all(axis=1)
         bin_df = bin_df.loc[~zero_index]
@@ -425,42 +433,80 @@ def featurize(interactions:list, profiles:dict, feature_names:list=None, key:lis
         feature_list = feature_list + ['entropy-mean', 'entropy-sum']
     if time: 
         feature_list.append('time')
-    feature_dict = {}
-    for i, ixn in enumerate(tqdm(ixn_list, desc='Defining INDIGO features')): 
-        sigma = bin_df[ixn].sum(axis=1) * (2 / len(ixn))
+    # feature_dict = {}
+    # X = np.empty([len(feature_list), len(ixn_list)], dtype=float)
+    X = np.empty([len(feature_list), len(interactions)], dtype=float)
+    col_names = []
+    for i, ixn in enumerate(tqdm(interactions, desc='Defining INDIGO features')): 
         if time is False or (time is True and time_values is None): 
-            delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
             delim = ' + '
         elif time is True and time_values is not None: 
             if all(t == 0 for t in time_values[i]): 
-                delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
                 delim = ' + '
             else: 
-                delta = pd.Series(np.diff((bin_df[ixn] * time_values[i]).values, n=len(ixn)-1).flatten() / sum(time_values[i]))
                 delim = ' -> '
-        feat_data = sigma.tolist() + delta.tolist()
-        if entropy: 
-            feat_data = feat_data + [np.log(df[ixn].var()).mean(), np.log(df[ixn].var()).sum()]
-        if time: 
-            feat_data = feat_data + [sum(time_values[i][:-1])]
-        feature_dict_keys = [key.split(' - dup')[0] for key in list(feature_dict.keys())]
-        n_key = feature_dict_keys.count(delim.join(ixn))
-        if n_key >= 1: 
-            feature_dict[delim.join(ixn) + ' - dup' + str(n_key)] = feat_data
+        if ixn not in ixn_list: 
+            pass
         else: 
-            feature_dict[delim.join(ixn)] = feat_data
-    feature_df = pd.DataFrame.from_dict(feature_dict)
-    feature_df.index = feature_list
+            sigma = bin_df[ixn].sum(axis=1) * (2 / len(ixn))
+            if time is False or (time is True and time_values is None): 
+                delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
+                # delim = ' + '
+            elif time is True and time_values is not None: 
+                if all(t == 0 for t in time_values[i]): 
+                    delta = (bin_df[ixn].sum(axis=1) == 1).astype('float')
+                    # delim = ' + '
+                else: 
+                    delta = pd.Series(np.diff((bin_df[ixn] * time_values[i]).values, n=len(ixn)-1).flatten() / sum(time_values[i]))
+                    # delim = ' -> '
+            feat_data = sigma.tolist() + delta.tolist()
+            if entropy: 
+                feat_data = feat_data + [np.log(df[ixn].var()).mean(), np.log(df[ixn].var()).sum()]
+            if time: 
+                feat_data = feat_data + [sum(time_values[i][:-1])]
+            X[:, i] = feat_data
+        # feature_dict_keys = [key.split(' - dup')[0] for key in list(feature_dict.keys())]
+        # n_key = feature_dict_keys.count(delim.join(ixn))
+        col_names_dup = [col.split(' - dup')[0] for col in col_names]
+        n_key = col_names_dup.count(delim.join(ixn))
+        if n_key >= 1: 
+            # feature_dict[delim.join(ixn) + ' - dup' + str(n_key)] = feat_data
+            col_names.append(delim.join(ixn) + ' - dup' + str(n_key))
+        else: 
+            # feature_dict[delim.join(ixn)] = feat_data
+            col_names.append(delim.join(ixn))
+    # feature_df = pd.DataFrame.from_dict(feature_dict)
+    # feature_df.index = feature_list
 
     # Apply orthology mapping (if strains is not None)
     if strains is not None: 
-        strains = list(compress(strains, keep_ixns))
+        # strains = list(compress(strains, keep_ixns))
         strain_set = set(strains)
         for strain in tqdm(strain_set, desc='Mapping orthologous genes'): 
             orthologs = orthology_map[strain]
-            row_mask = [feature for feature in list(feature_df.index) if (feature.startswith('sigma')) & (not any([gene == feature[10:] for gene in orthologs]))]
+            # row_mask = [feature for feature in list(feature_df.index) if (feature.startswith('sigma')) & (not any([gene == feature[10:] for gene in orthologs]))]
+            row_mask = [((feature.startswith('sigma')) & (not any([gene == feature[gx:] for gene in orthologs]))) for feature in feature_list]
             col_mask = [s == strain for s in strains]
-            feature_df.loc[row_mask, col_mask] = 0
+            mask = np.zeros([len(row_mask), len(col_mask)], dtype=bool)
+            mask[:, np.array(col_mask)] = np.tile(np.reshape(np.array(row_mask), (len(row_mask), 1)), (1, col_mask.count(True)))
+            # feature_df.loc[row_mask, col_mask] = 0
+            X[mask] = 0.0
+    
+    # Convert X into a sparse matrix
+    # X = sparse.csr_matrix(X)
+
+    # Define outputs
+    feature_list = [v + '_rep' + str(feature_list[:i].count(v) + 1) if feature_list.count(v) > 1 else v for i, v in enumerate(feature_list)]
+    if time and entropy: 
+        k = 3
+    elif time and not entropy: 
+        k = 1
+    elif entropy and not time: 
+        k = 2
+    else: 
+        k = 0
+    assert len(set(feature_list)) == 2*len(feature_names)+k
+    feature_df = pd.DataFrame(X, index=feature_list, columns=col_names)
 
     return {'interaction_list': ixn_list, 'drug_profiles': df, 'feature_df': feature_df, 'idx': keep_ixns}
 
