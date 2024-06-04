@@ -64,7 +64,7 @@ setup(
     python_requires=">=3.8, <4",
     # 
     # This field lists other packages that your project depends on to run.
-    install_requires=["numpy", "pandas", "tqdm"],  # Optional
+    install_requires=["numpy", "pandas", "tqdm", "scipy"],  # Optional
     # 
     # Data files to be included in your packages.
     package_data={  # Optional
